@@ -19,18 +19,40 @@ taskname=$2
 # host=sp04n01
 # 
 # rsh $host llsubmit - < $jobname
-##if [[ $USER = lvkai ]] ; then
-##  nameofsms=nwpc_op
-##fi
+if [[ $USER = nwp ]] ; then
+  nameofsms=nwpc_op
+elif [[ $USER = nwp_qu ]] ; then
+  nameofsms=nwpc_qu
+elif [[ $USER = nwp_sp ]] ; then
+  nameofsms=nwpc_sp
+elif [[ $USER = nwp_ex ]] ; then
+  nameofsms=nwpc_ex
+elif [[ $USER = nwp_xp ]] ; then
+  nameofsms=nwpc_xp
+else
   nameofsms=nwpc_$USER
+fi
 
 name=$(llsubmit $jobname 2>>$SUBMITLOG)
+#name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
 #name=$(llsubmit.org $jobname 2>>$SUBMITLOG)
 rid=$(echo $name | cut -d '"' -f 2)
 
+if [ -n "$rid" ]; then
+		
 cdp <<EOF
-  login $nameofsms $USER 1
-  alter -v $taskname SMSRID $rid
-  exit
+login $nameofsms $USER 1
+alter -v $taskname SMSRID $rid
+exit
 EOF
+
+else
+
+cdp <<EOF
+login $nameofsms $USER 1
+force -r aborted $taskname
+exit
+EOF
+
+fi
 #rsh llq
