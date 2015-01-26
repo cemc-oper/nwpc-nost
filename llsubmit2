@@ -1,0 +1,36 @@
+#!/bin/ksh
+
+# llsubmit2 jobname taskname  ## host
+
+set -ex
+SUBMITLOG=$WORKDIR/sublog/submit.log
+test -d $WORKDIR/sublog ||mkdir -p $WORKDIR/sublog
+export SUBMITLOG
+if [ $# -ne 2 ] ; then
+  echo ...
+  exit 1
+fi
+
+jobname=$1
+taskname=$2
+#echo $jobname $taskname >>$SUBMITLOG
+# host=$2
+#
+# host=sp04n01
+# 
+# rsh $host llsubmit - < $jobname
+##if [[ $USER = lvkai ]] ; then
+##  nameofsms=nwpc_op
+##fi
+  nameofsms=nwpc_$USER
+
+name=$(llsubmit $jobname 2>>$SUBMITLOG)
+#name=$(llsubmit.org $jobname 2>>$SUBMITLOG)
+rid=$(echo $name | cut -d '"' -f 2)
+
+cdp <<EOF
+  login $nameofsms $USER 1
+  alter -v $taskname SMSRID $rid
+  exit
+EOF
+#rsh llq
