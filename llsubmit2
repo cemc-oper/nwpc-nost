@@ -1,24 +1,47 @@
 #!/bin/ksh
+#
+# Submit sms job script to loadleveler.
+#
+# llsubmit2 jobname taskname jobout  
 
-# llsubmit2 jobname taskname  ## host
-set -u
-set -ex
-SUBMITLOG=$WORKDIR/sublog/submit.log
-test -d $WORKDIR/sublog ||mkdir -p $WORKDIR/sublog
-export SUBMITLOG
-if [ $# -ne 2 ] ; then
-  echo ...
+usage() {
+  echo "Submit sms job script to loadleveler."
+  echo "Usage: llsubmit2 jobname taskname [jobout]"
+}
+
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+if [[ $# -ne 2 ]] && [[ $# -ne 3 ]] 
+then
+  err "error params"
+  usage
   exit 1
 fi
 
+set -u
+set -ex
+
+SUBMITLOG=$WORKDIR/sublog/submit.log
+test -d $WORKDIR/sublog ||mkdir -p $WORKDIR/sublog
+export SUBMITLOG
+
+jobname=
+taskname=
+jobout=
+
 jobname=$1
-taskname=$2
-#echo $jobname $taskname >>$SUBMITLOG
-# host=$2
-#
-# host=sp04n01
-# 
-# rsh $host llsubmit - < $jobname
+shift
+taskname=$1
+shift
+if [[ $# -gt 0 ]]
+then
+  jobout=$1
+  shift
+fi
+
+# name of sms server.
 if [[ $USER = nwp ]] ; then
   nameofsms=nwpc_op
 elif [[ $USER = nwp_qu ]] ; then
@@ -35,28 +58,28 @@ fi
 
 name=$(llsubmit $jobname 2>>$SUBMITLOG)
 #name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
-#name=$(llsubmit.org $jobname 2>>$SUBMITLOG)
 rid=$(echo $name | cut -d '"' -f 2)
 
 if [ -n "$rid" ]; then
-		
-cdp <<EOF
+  cdp <<EOF
 login $nameofsms $USER 1
 alter -v $taskname SMSRID $rid
 exit
 EOF
 
 else
-
-cdp <<EOF
+  cdp <<EOF
 login $nameofsms $USER 1
 force -r aborted $taskname
 exit
 EOF
-job_err_output_file=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1.err/g' )
-cat > ${job_err_output_file} <<EOF
+  if [[ ! -n "${jobout}" ]]
+  then
+    jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
+  fi
+  job_err_output_file=${jobout}.err
+  cat > ${job_err_output_file} <<EOF
 [$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler.
 EOF
 
 fi
-#rsh llq
