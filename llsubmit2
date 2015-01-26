@@ -53,8 +53,8 @@ login $nameofsms $USER 1
 force -r aborted $taskname
 exit
 EOF
-
-cat > ${jobname}.err <<EOF
+job_err_output_file=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1.err/g' )
+cat > ${job_err_output_file} <<EOF
 [$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler.
 EOF
 
