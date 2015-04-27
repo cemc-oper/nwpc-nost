@@ -56,8 +56,8 @@ else
   nameofsms=nwpc_$USER
 fi
 
-name=$(llsubmit $jobname 2>>$SUBMITLOG)
-#name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
+#name=$(llsubmit $jobname 2>>$SUBMITLOG)
+name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
 rid=$(echo $name | cut -d '"' -f 2)
 
 if [ -n "$rid" ]; then
