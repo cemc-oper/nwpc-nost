@@ -1,0 +1,118 @@
+#!/bin/ksh
+#
+# Submit sms job script to loadleveler.
+#
+# Usage:
+# 	llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO% 
+#
+# Version:
+# 	v1.0 2015.04.27
+
+usage() {
+  echo "Submit sms job script to loadleveler."
+  echo "Usage: llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO%"
+}
+
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+debug() {
+	if [[ "$DEBUG" = "true" ]]; then
+		echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')] $@" >> ${debug_log}
+	fi
+}
+
+# for test use
+export DEBUG=true
+export debug_log=/cma/u/$USER/smsworks/llsubmit4.log
+
+if [[ $# -ne 4 ]] 
+then
+  err "error params"
+  usage
+  exit 1
+fi
+
+set -u
+set -ex
+
+SUBMITLOG=$WORKDIR/sublog/submit.log
+test -d $WORKDIR/sublog ||mkdir -p $WORKDIR/sublog
+export SUBMITLOG
+
+jobname=
+taskname=
+smstries=
+smstryno=
+jobout=
+
+jobname=$1
+shift
+taskname=$1
+shift
+smstries=$1
+shift
+smstryno=$1
+shift
+
+if [[ ! -n "${jobout}" ]]
+then
+	jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
+fi
+job_err_output_file=${jobout}.err
+
+debug "${jobname} ${taskname} ${smstries} ${smstryno}"
+
+# name of sms server.
+if [[ $USER = nwp ]] ; then
+  nameofsms=nwpc_op
+elif [[ $USER = nwp_qu ]] ; then
+  nameofsms=nwpc_qu
+elif [[ $USER = nwp_sp ]] ; then
+  nameofsms=nwpc_sp
+elif [[ $USER = nwp_ex ]] ; then
+  nameofsms=nwpc_ex
+elif [[ $USER = nwp_xp ]] ; then
+  nameofsms=nwpc_xp
+else
+  nameofsms=nwpc_$USER
+fi
+
+name=$(llsubmit $jobname 2>>$SUBMITLOG)
+# name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
+rid=$(echo $name | cut -d '"' -f 2)
+
+if [ -n "$rid" ]; then
+	debug "llsubmit success $taskname"
+	cdp <<EOF
+login $nameofsms $USER 1
+alter -v $taskname SMSRID $rid
+exit
+EOF
+
+else
+	debug "submit failed $taskname at TRYNO $smstryno"
+	if [[ $smstryno -ge $smstries ]]; then
+		debug "abort $taskname after $smstries tries"
+		cat > ${job_err_output_file} <<EOF
+[$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler after $smstries tries.
+EOF
+		cdp <<EOF
+login $nameofsms $USER 1
+force -r aborted $taskname
+exit
+EOF
+	else
+		debug "rerun $taskname after TRYNO $smstryno"
+		cat > ${job_err_output_file} <<EOF
+[$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler at tryno $smstryno.
+EOF
+		cdp <<EOF
+login $nameofsms $USER 1
+run -f $taskname
+exit
+EOF
+	fi
+
+fi
