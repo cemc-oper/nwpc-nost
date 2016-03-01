@@ -48,13 +48,9 @@ smstryno=
 jobout=
 
 jobname=$1
-shift
-taskname=$1
-shift
-smstries=$1
-shift
-smstryno=$1
-shift
+taskname=$2
+smstries=$3
+smstryno=$4
 
 if [[ ! -n "${jobout}" ]]
 then
