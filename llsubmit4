@@ -75,6 +75,9 @@ else
   nameofsms=nwpc_$USER
 fi
 
+# wait for a random time between 0 and 5 seconds.
+/usr/bin/python -c 'import random,time;random_seconds=random.uniform(0,5);time.sleep(random_seconds);'
+
 name=$(llsubmit $jobname 2>>$SUBMITLOG)
 # name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
 rid=$(echo $name | cut -d '"' -f 2)
