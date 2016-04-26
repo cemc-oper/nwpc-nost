@@ -52,12 +52,41 @@ elif [[ $USER = nwp_ex ]] ; then
   nameofsms=nwpc_ex
 elif [[ $USER = nwp_xp ]] ; then
   nameofsms=nwpc_xp
+elif [[ $USER = nwp_pd ]]; then
+    nameofsms=nwpc_pd
 else
   nameofsms=nwpc_$USER
 fi
 
 # wait for a random time between 0 and 5 seconds.
 /usr/bin/python -c 'import random,time;random_seconds=random.uniform(0,5);time.sleep(random_seconds);'
+
+
+if [[ ! -n "${jobout}" ]]
+then
+jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
+fi
+job_err_output_file=${jobout}.err
+                            
+
+
+# test if job file exisits.
+if [ ! -f $jobname ]; then
+    sleep 5
+    if [ ! -f $jobname ]; then
+        cat > ${job_err_output_file} <<EOF
+[$(date +"%Y-%m-%d %H:%M:%S")] Job file does not exist.
+EOF
+
+        cdp <<EOF
+login $nameofsms $USER 1
+force -r aborted $taskname
+exit
+EOF
+    exit
+    fi
+fi
+        
 
 name=$(llsubmit $jobname 2>>$SUBMITLOG)
 #name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
@@ -76,11 +105,6 @@ login $nameofsms $USER 1
 force -r aborted $taskname
 exit
 EOF
-  if [[ ! -n "${jobout}" ]]
-  then
-    jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
-  fi
-  job_err_output_file=${jobout}.err
   cat > ${job_err_output_file} <<EOF
 [$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler.
 EOF
