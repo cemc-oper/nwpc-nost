@@ -44,6 +44,10 @@ export SUBMIT_LOG=true
 export ERROR_LOG=true
 
 export log_dir=$WORKDIR/sublog
+# for nwp_qu only
+if [[ $USER = nwp_qu ]] ; then
+    export log_dir=/cma/g1/nwp_qu/sublog
+fi 
 
 export submit_log=${log_dir}/llsubmit4.submit.log
 export debug_log=${log_dir}/llsubmit4.debug.log
@@ -125,8 +129,8 @@ EOF
 fi
 
 submit_log "llsubmit $jobname"
-# name=$(llsubmit $jobname 2>>${submit_log})
-name=$( llsubmit asdfasdfasdf 2>>${submit_log})
+name=$(llsubmit $jobname 2>>${submit_log})
+#name=$( llsubmit asdfasdfasdf 2>>${submit_log})
 
 rid=$(echo $name | cut -d '"' -f 2)
 
