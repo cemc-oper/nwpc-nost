@@ -4,6 +4,9 @@
 #
 # Usage:
 # 	llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO% 
+# 
+# NOTE:
+#	Variable WORKDIR must be set in the shell environment.
 #
 # Version:
 # 	v1.0 2015.04.27
@@ -14,18 +17,39 @@ usage() {
 }
 
 err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
+}
+
+submit_log() {
+	if [[ "$SUBMIT_LOG" = "true" ]]; then
+		echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]$@" >> ${submit_log}
+	fi
 }
 
 debug() {
 	if [[ "$DEBUG" = "true" ]]; then
-		echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')] $@" >> ${debug_log}
+		echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]$@" >> ${debug_log}
+	fi
+}
+
+error_log() {
+	if [[ "$ERROR_LOG" = "true" ]]; then
+		echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]$@" >> ${error_log}
 	fi
 }
 
 # for test use
 export DEBUG=false
-export debug_log=/cma/u/$USER/smsworks/llsubmit4.log
+export SUBMIT_LOG=true
+export ERROR_LOG=true
+
+export log_dir=$WORKDIR/sublog
+
+export submit_log=${log_dir}/llsubmit4.submit.log
+export debug_log=${log_dir}/llsubmit4.debug.log
+export error_log=${log_dir}/llsubmit4.error.log
+
+test -d ${log_dir} ||mkdir -p ${log_dir}
 
 if [[ $# -ne 4 ]] 
 then
@@ -36,10 +60,6 @@ fi
 
 set -u
 set -ex
-
-SUBMITLOG=$WORKDIR/sublog/submit.log
-test -d $WORKDIR/sublog ||mkdir -p $WORKDIR/sublog
-export SUBMITLOG
 
 jobname=
 taskname=
@@ -77,12 +97,12 @@ else
   nameofsms=nwpc_$USER
 fi
 
-# wait for a random time between 0 and 5 seconds.
-/usr/bin/python -c 'import random,time;random_seconds=random.uniform(0,5);time.sleep(random_seconds);'
+# wait for a random time between SMSTRYNO and 5 seconds.
+/usr/bin/python -c 'import random,time;random_seconds=random.uniform('${smstryno}',5);time.sleep(random_seconds);'
 
 if [[ ! -n "${jobout}" ]]
 then
-        jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
+	jobout=$( echo ${jobname} | sed 's/job\([0-9]*\)$/\1/g' )
 fi
 job_err_output_file=${jobout}.err
 
@@ -104,10 +124,10 @@ EOF
     fi
 fi
 
+submit_log "llsubmit $jobname"
+# name=$(llsubmit $jobname 2>>${submit_log})
+name=$( llsubmit asdfasdfasdf 2>>${submit_log})
 
-
-name=$(llsubmit $jobname 2>>$SUBMITLOG)
-# name=$( llsubmit asdfasdfasdf 2>>$SUBMITLOG)
 rid=$(echo $name | cut -d '"' -f 2)
 
 if [ -n "$rid" ]; then
@@ -125,6 +145,7 @@ else
 		cat > ${job_err_output_file} <<EOF
 [$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler after $smstries tries.
 EOF
+		error_log "[llsubmit4]submit failed: $@"
 		cdp <<EOF
 login $nameofsms $USER 1
 force -r aborted $taskname
@@ -135,6 +156,7 @@ EOF
 		cat > ${job_err_output_file} <<EOF
 [$(date +"%Y-%m-%d %H:%M:%S")] Failed to submit job to loadleveler at tryno $smstryno.
 EOF
+		error_log "[llsubmit4]submit failed: $@"
 		cdp <<EOF
 login $nameofsms $USER 1
 run -f $taskname
