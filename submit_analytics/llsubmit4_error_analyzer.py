@@ -67,7 +67,10 @@ def range_handler(args):
             'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z')
         }
     }
-    print(json.dumps(result))
+    if args.pretty_print:
+        print(json.dumps(result, indent=4))
+    else:
+        print(json.dumps(result))
 
 
 def main():
@@ -81,6 +84,7 @@ def main():
 
     range_parser = sub_parsers.add_parser('range', description="get time range in error log file.")
     range_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path")
+    range_parser.add_argument("--pretty-print", help="print pretty result.", action="store_true")
     range_parser.set_defaults(func=range_handler)
 
     args = parser.parse_args()
