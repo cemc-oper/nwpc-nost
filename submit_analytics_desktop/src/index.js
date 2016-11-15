@@ -1,0 +1,26 @@
+import React from 'react'
+import { render } from 'react-dom'
+
+import { createStore, applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+
+import { hashHistory } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
+
+
+import SubmitAnalyticsAppReducer from './reducers/index'
+
+import Root from './containers/Root'
+
+let store = createStore(SubmitAnalyticsAppReducer,
+    applyMiddleware(
+        thunkMiddleware
+    )
+);
+
+const history = syncHistoryWithStore(hashHistory, store);
+
+render(
+    <Root store={store} history={history} />,
+    document.getElementById('app')
+);
