@@ -60,7 +60,7 @@ def range_handler(args):
 
     command = "tail -n 1 {log_file_path}".format(log_file_path=log_file_path)
     output_string, error_string = run_command(command)
-    parse_error_log(output_string)
+    record = parse_error_log(output_string)
     end_date = record['date']
 
     # with open(log_file_path, 'r') as log_file:
