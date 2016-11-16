@@ -18,7 +18,7 @@ var webpack_module= {
 };
 
 var externals= {
-    'electron': 'electron'
+    // 'electron': 'electron'
     // 'react': 'React',
     // 'react-dom': 'ReactDOM',
     // 'redux': 'Redux',
@@ -39,5 +39,6 @@ module.exports = {
         sourceMapFilename: '[file].map'
     },
     module: webpack_module,
-    externals: externals
+    externals: externals,
+    target: 'electron-renderer'
 };

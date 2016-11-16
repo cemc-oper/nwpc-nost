@@ -58,3 +58,30 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+const ipc = electron.ipcMain
+ipc.on('asynchronous-message', function (event, arg) {
+
+    let Client = require('ssh2').Client;
+    let conn = new Client();
+    conn.on('ready', function() {
+      console.log('Client :: ready');
+      conn.exec('uptime', function(err, stream) {
+        if (err) throw err;
+        stream.on('close', function(code, signal) {
+          console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+          conn.end();
+        }).on('data', function(data) {
+          console.log('STDOUT: ' + data);
+          event.sender.send('asynchronous-reply', data);
+        }).stderr.on('data', function(data) {
+          console.log('STDERR: ' + data);
+        });
+      });
+    }).connect({
+      host: 'uranus.hpc.nmic.cn',
+      port: 22,
+      username: 'wangdp',
+      password: 'perilla'
+    });
+})
