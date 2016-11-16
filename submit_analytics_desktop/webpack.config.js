@@ -18,6 +18,7 @@ var webpack_module= {
 };
 
 var externals= {
+    'electron': 'electron'
     // 'react': 'React',
     // 'react-dom': 'ReactDOM',
     // 'redux': 'Redux',
