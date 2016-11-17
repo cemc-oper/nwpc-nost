@@ -22,30 +22,33 @@ export default  class HpcAuth extends Component{
         const {host, port, user, password} = this.props;
         return (
             <div>
-                <h2>登录</h2>
                 <div className="row">
+
                     <div className="col-md-12">
-                        <form>
-                            <div className="form-group">
-                                <label>主机</label>
-                                <input type="text" className="form-control" ref="host" defaultValue={host}/>
+                        <div className="panel panel-info">
+                            <div className="panel-heading">
+                                <h3 className="panel-title">账户</h3>
                             </div>
+                            <div className="panel-body">
+                                <div className="col-xs-4">
+                                    <label>主机</label>
+                                    <input type="text" className="form-control" ref="host" defaultValue={host} />
+                                </div>
+                                <div className="col-xs-2">
+                                    <label>端口</label>
+                                    <input type="text" className="form-control" ref="port" defaultValue={port} />
+                                </div>
+                                <div className="col-xs-3">
+                                    <label>用户</label>
+                                    <input type="text" className="form-control" ref="user" defaultValue={user}/>
+                                </div>
 
-                            <div className="form-group">
-                                <label>端口</label>
-                                <input type="text" className="form-control" ref="port" defaultValue={port}/>
+                                <div className="col-xs-3">
+                                    <label>密码</label>
+                                    <input type="password" className="form-control" ref="password" defaultValue={password} />
+                                </div>
                             </div>
-
-                            <div className="form-group">
-                                <label>用户</label>
-                                <input type="text" className="form-control" ref="user" defaultValue={user}/>
-                            </div>
-
-                            <div className="form-group">
-                                <label>密码</label>
-                                <input type="password" className="form-control" ref="password" defaultValue={password}/>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -58,4 +61,4 @@ HpcAuth.propTypes = {
     port: PropTypes.number,
     user: PropTypes.string,
     password: PropTypes.string
-}
+};

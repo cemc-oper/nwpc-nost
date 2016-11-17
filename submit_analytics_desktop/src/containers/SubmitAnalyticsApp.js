@@ -36,12 +36,16 @@ class SubmitAnalyticsApp extends Component{
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-sm-4">
+                    <div className="col-sm-12">
                         <HpcAuth ref="hpc_auth"
                           host="uranus-bk.hpc.nmic.cn"
                           port={22}
                           user="nwp"
                           password="nwpop"/>
+                        </div>
+                    </div>
+                <div className="row">
+                    <div className="col-sm-4">
                         <ErrorAnalyzerConfig ref="error_analyzer_config"
                           error_log_path="/cma/g1/nwp/sublog/llsubmit4.error.log"
                           analytics_type="day"
@@ -51,7 +55,7 @@ class SubmitAnalyticsApp extends Component{
                             <div className="col-sm-12">
                             <form>
                                 <div className="form-group">
-                                    <button type="button" className="btn btn-default"
+                                    <button type="button" className="btn btn-primary"
                                         onClick={this.handleRunClick.bind(this)}>
                                         运行
                                         </button>
@@ -61,10 +65,17 @@ class SubmitAnalyticsApp extends Component{
                         </div>
                     </div>
                     <div className="col-sm-8">
-                        <h2>统计结果</h2>
-                        <AnalyticsChart
-                            analytics_result={analytics_result}
-                        />
+                        <div className="panel panel-success">
+                            <div className="panel-heading">
+                                <h3 className="panel-title">统计结果</h3>
+                            </div>
+                            <div className="panel-body">
+                                <AnalyticsChart
+                                    analytics_result={analytics_result}
+                                />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
