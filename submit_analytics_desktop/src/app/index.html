@@ -3,30 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Submit Analytics Tool</title>
-    <script>
-        (function() {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = '../../dist/css/bootstrap.min.css';
-            document.write(link.outerHTML);
-        }());
-        (function() {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = '../../dist/css/bootstrap-theme.min.css';
-            document.write(link.outerHTML);
-        }());
-    </script>
 </head>
 <body>
 
 <div id="app"></div>
 
 <script>
-    window.$ = window.jQuery = require('../../dist/js/jquery.min.js');
-</script>
-<script src="../../dist/js/bootstrap.min.js"></script>
-<script>
+    require('../../dist/common.dist.js');
     require('../../dist/index.entry.js');
 </script>
 

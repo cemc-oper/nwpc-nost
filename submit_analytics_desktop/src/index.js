@@ -1,3 +1,6 @@
+require('bootstrap/less/bootstrap.less');
+require('font-awesome/scss/font-awesome.scss');
+
 import React from 'react'
 import { render } from 'react-dom'
 
