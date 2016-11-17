@@ -169,6 +169,62 @@ export default  class AnalyticsChart extends Component{
         )
     }
 
+    countDateHourChart(analytics_result){
+        const {data} = analytics_result;
+        const { begin_date, end_date, count_type, count_result } = data;
+
+        let day_hour_formatter = d3_time_format.timeFormat("%Y-%m-%d %H:%M:%S");
+        let day_parser = d3_time_format.timeParse("%Y-%m-%d");
+
+        let x_axis;
+        let y_axis;
+        let series;
+
+        let x_range = d3time.timeHour.range(day_parser(begin_date), day_parser(end_date));
+        let x_data = x_range.map(function (item, index) {
+            return day_hour_formatter(item);
+        });
+        x_axis = [{
+            type: 'category',
+            data: x_data,
+            axisTick: {
+                alignWithLabel: true,
+                interval: 0
+            },
+        }];
+
+        y_axis = [{
+            type: 'value'
+        }];
+        let values = x_data.map(function (item, index) {
+            if (item in count_result) {
+                return count_result[item]
+            }
+            else
+                return 0;
+        });
+
+        let bar_data = {
+            name: 'count',
+            type: 'bar',
+            barWidth: '80%',
+            data: values
+        };
+        series = [bar_data];
+
+        let chart_data = {
+            x_axis: x_axis,
+            y_axis: y_axis,
+            series: series
+        };
+
+        return (
+            <div>
+                <ErrorAnalyzerBarChart data={chart_data} />
+            </div>
+        )
+    }
+
     render() {
         const {analytics_result} = this.props;
         // console.log('AnalyticsChart', analytics_result);
@@ -189,7 +245,9 @@ export default  class AnalyticsChart extends Component{
                 return this.countWeekdayChart(analytics_result);
             } else if(count_type == "system") {
                 return this.countSystemChart(analytics_result);
-            }else {
+            } else if(count_type == "date-hour") {
+                return this.countDateHourChart(analytics_result);
+            } else {
                     return (
                         <div>
 

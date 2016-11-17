@@ -149,8 +149,15 @@ def count_handler(args):
                 elif count_type == 'system':
                     system = get_system_from_path(record['info']['path'])
                     count_result[system] += 1
+                elif count_type == 'date-hour':
+                    cur_datetime = record['date']
+                    cur_date = cur_datetime.date()
+                    zero_time = datetime.time(cur_datetime.hour)
+                    cur_hour = datetime.datetime.combine(cur_date, zero_time)
+                    count_result[cur_hour.strftime("%Y-%m-%d %H:%M:%S")] += 1
                 else:
                     raise Exception('count type unsupported', count_type)
+
     except FileNotFoundError as e:
         result = {
             'app': 'llsubmit4_error_analyzer',
@@ -200,7 +207,7 @@ def main():
     count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['day', 'weekday', 'system'])
+                              choices=['day', 'weekday', 'date-hour', 'system'])
     count_parser.set_defaults(func=count_handler)
 
     args = parser.parse_args()
