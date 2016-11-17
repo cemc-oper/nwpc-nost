@@ -1,10 +1,14 @@
 import React, { Component, PropTypes } from 'react'
+import { dispatch } from 'redux'
 import { connect } from 'react-redux'
 import {ipcRenderer} from 'electron'
 // const electron = require('electron');
 
 import HpcAuth from '../components/HpcAuth'
 import ErrorAnalyzerConfig from '../components/ErrorAnalyzerConfig'
+import AnalyticsChart from '../components/AnalyticsChart'
+
+import {receiveAnalyticsResult} from '../actions/index'
 
 class SubmitAnalyticsApp extends Component{
     constructor(props) {
@@ -12,22 +16,23 @@ class SubmitAnalyticsApp extends Component{
     }
 
     componentDidMount() {
+        const { dispatch } = this.props;
         ipcRenderer.on('llsubmit4-error-analytics-reply', function (event, result) {
             let analytics_result = JSON.parse(result);
-            console.log(analytics_result);
+            dispatch(receiveAnalyticsResult(analytics_result));
         })
     }
 
     handleRunClick() {
         let auth = this.refs.hpc_auth.getAuth();
         let config = this.refs.error_analyzer_config.getConfig();
-        console.log(auth, config);
 
         ipcRenderer.send('llsubmit4-error-analytics-message', auth, config);
     }
 
     render() {
-        const { params } = this.props;
+        const { analytics_chart } = this.props;
+        const { analytics_result } = analytics_chart;
         return (
             <div className="container">
                 <div className="row">
@@ -57,9 +62,9 @@ class SubmitAnalyticsApp extends Component{
                     </div>
                     <div className="col-sm-8">
                         <h2>统计结果</h2>
-                        <div>
-
-                        </div>
+                        <AnalyticsChart
+                            analytics_result={analytics_result}
+                        />
                     </div>
                 </div>
             </div>
@@ -67,9 +72,16 @@ class SubmitAnalyticsApp extends Component{
     }
 }
 
+SubmitAnalyticsApp.propTypes = {
+    analytics_chart: PropTypes.shape({
+        analytics_result: PropTypes.object
+    }),
+};
+
 
 function mapStateToProps(state){
     return {
+        analytics_chart: state.error_log.analytics_chart,
     }
 }
 

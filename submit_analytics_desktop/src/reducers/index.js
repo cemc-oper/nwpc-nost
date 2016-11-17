@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import { routerReducer as routing } from 'react-router-redux'
 
+import { RESPONSE_ANALYTICS_RESULT } from '../actions/index'
+
 function error_reducer(state={
     status: {
         is_fetching: false,
@@ -8,12 +10,23 @@ function error_reducer(state={
     },
     auth:{},
     config:{},
-    count:{},
-    range:{}
+    analytics_chart:{
+        analytics_result:null
+    },
+    range:{
+        start_date: null,
+        end_date: null
+    }
 }, action) {
-    switch(action){
+    switch(action.type){
+        case RESPONSE_ANALYTICS_RESULT:
+            return Object.assign({}, state, {
+                analytics_chart: {
+                    analytics_result: action.analytics_result
+                }
+            });
         default:
-            return state
+            return state;
     }
 }
 
