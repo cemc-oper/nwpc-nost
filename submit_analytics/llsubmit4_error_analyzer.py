@@ -55,11 +55,45 @@ def range_handler(args):
 
     command = "head -n 1 {log_file_path}".format(log_file_path=log_file_path)
     output_string, error_string = run_command(command)
+    if len(error_string) > 0:
+        result = {
+            'app': 'llsubmit4_error_analyzer',
+            'type': 'range',
+            'timestamp': datetime.datetime.now().timestamp(),
+            'error': 'head_command_error',
+            'data': {
+                'error_message': 'error in executing head command.',
+                'output': {
+                    'std_out': output_string,
+                    'std_err': error_string
+                }
+            }
+        }
+        print(json.dumps(result))
+        return
+
     record = parse_error_log(output_string)
     start_date = record['date']
 
     command = "tail -n 1 {log_file_path}".format(log_file_path=log_file_path)
     output_string, error_string = run_command(command)
+    if len(error_string) > 0:
+        result = {
+            'app': 'llsubmit4_error_analyzer',
+            'type': 'range',
+            'timestamp': datetime.datetime.now().timestamp(),
+            'error': 'tail_command_error',
+            'data': {
+                'error_message': 'error in executing tail command.',
+                'output': {
+                    'std_out': output_string,
+                    'std_err': error_string
+                }
+            }
+        }
+        print(json.dumps(result))
+        return
+
     record = parse_error_log(output_string)
     end_date = record['date']
 
@@ -95,27 +129,41 @@ def count_handler(args):
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
     count_result = defaultdict(int)
-    with open(log_file_path, 'r') as log_file:
-        for line in log_file:
-            record = parse_error_log(line)
-            # check date
-            if begin_date:
-                if record['date'].date() < begin_date.date():
-                    continue
-            if end_date:
-                if record['date'].date() >= end_date.date():
-                    continue
+    try:
+        with open(log_file_path, 'r') as log_file:
+            for line in log_file:
+                record = parse_error_log(line)
+                # check date
+                if begin_date:
+                    if record['date'].date() < begin_date.date():
+                        continue
+                if end_date:
+                    if record['date'].date() >= end_date.date():
+                        continue
 
-            # check count_type
-            if count_type == 'day':
-                count_result[record['date'].strftime("%Y-%m-%d")] += 1
-            elif count_type == 'weekday':
-                count_result[record['date'].weekday()] += 1
-            elif count_type == 'system':
-                system = get_system_from_path(record['info']['path'])
-                count_result[system] += 1
-            else:
-                raise Exception('count type unsupported', count_type)
+                # check count_type
+                if count_type == 'day':
+                    count_result[record['date'].strftime("%Y-%m-%d")] += 1
+                elif count_type == 'weekday':
+                    count_result[record['date'].weekday()] += 1
+                elif count_type == 'system':
+                    system = get_system_from_path(record['info']['path'])
+                    count_result[system] += 1
+                else:
+                    raise Exception('count type unsupported', count_type)
+    except FileNotFoundError as e:
+        result = {
+            'app': 'llsubmit4_error_analyzer',
+            'type': 'count',
+            'error': 'file_not_found',
+            'timestamp': datetime.datetime.now().timestamp(),
+            'data': {
+                'error_message': 'file is not found',
+            }
+        }
+        print(json.dumps(result))
+        return
+
     result = {
         'app': 'llsubmit4_error_analyzer',
         'type': 'count',
