@@ -12,9 +12,9 @@ class SubmitAnalyticsApp extends Component{
     }
 
     componentDidMount() {
-        // const ipc = electron.ipcRenderer;
-        ipcRenderer.on('asynchronous-reply', function (event, arg) {
-            console.log(event, arg);
+        ipcRenderer.on('llsubmit4-error-analytics-reply', function (event, result) {
+            let analytics_result = JSON.parse(result);
+            console.log(analytics_result);
         })
     }
 
@@ -23,8 +23,7 @@ class SubmitAnalyticsApp extends Component{
         let config = this.refs.error_analyzer_config.getConfig();
         console.log(auth, config);
 
-        // const ipc = electron.ipcRenderer;
-        ipcRenderer.send('asynchronous-message', 'ping')
+        ipcRenderer.send('llsubmit4-error-analytics-message', auth, config);
     }
 
     render() {
@@ -34,14 +33,14 @@ class SubmitAnalyticsApp extends Component{
                 <div className="row">
                     <div className="col-sm-4">
                         <HpcAuth ref="hpc_auth"
-                          host="uranus.hpc.nmic.cn"
+                          host="uranus-bk.hpc.nmic.cn"
                           port={22}
-                          user="wangdp"
-                          password="perilla"/>
+                          user="nwp"
+                          password="nwpop"/>
                         <ErrorAnalyzerConfig ref="error_analyzer_config"
                           error_log_path="/cma/g1/nwp/sublog/llsubmit4.error.log"
                           analytics_type="day"
-                          start_date="2016-11-07"
+                          begin_date="2016-11-07"
                           end_date="2016-11-14"/>
                         <div className="row">
                             <div className="col-sm-12">

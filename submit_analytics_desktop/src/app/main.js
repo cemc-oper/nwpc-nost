@@ -59,29 +59,37 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-const ipc = electron.ipcMain
-ipc.on('asynchronous-message', function (event, arg) {
+const ipc = electron.ipcMain;
+const ssh2 = require('ssh2');
 
-    let Client = require('ssh2').Client;
+ipc.on('llsubmit4-error-analytics-message', function (event, auth, config) {
+    console.log(auth, config);
+    let command = "/cma/g3/wangdp/usr/local/bin/python3 "
+        + "/cma/g3/wangdp/work/2016/nwpc-operation-system-tool/submit_analytics/llsubmit4_error_analyzer.py "
+        + "count -f " + config.error_log_path + " "
+        + "--type="+ config.analytics_type +" --begin-date=" + config.begin_date + " --end-date=" + config.end_date;
+    let Client = ssh2.Client;
     let conn = new Client();
     conn.on('ready', function() {
-      console.log('Client :: ready');
-      conn.exec('uptime', function(err, stream) {
-        if (err) throw err;
-        stream.on('close', function(code, signal) {
-          console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-          conn.end();
-        }).on('data', function(data) {
-          console.log('STDOUT: ' + data);
-          event.sender.send('asynchronous-reply', data);
-        }).stderr.on('data', function(data) {
-          console.log('STDERR: ' + data);
+        console.log('Client :: ready');
+        conn.exec(command, function(err, stream) {
+            let std_out = '';
+            if (err) throw err;
+            stream.on('close', function(code, signal) {
+                console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+                conn.end();
+                console.log(std_out);
+                event.sender.send('llsubmit4-error-analytics-reply', std_out);
+            }).on('data', function(data) {
+                std_out += data;
+            }).stderr.on('data', function(data) {
+                console.log('STDERR: ' + data);
+            });
         });
-      });
     }).connect({
-      host: 'uranus.hpc.nmic.cn',
-      port: 22,
-      username: 'wangdp',
-      password: 'perilla'
+        host: auth.host,
+        port: auth.port,
+        username: auth.user,
+        password: auth.password
     });
-})
+});

@@ -6,7 +6,7 @@ export default  class HpcAuth extends Component{
     }
 
     getAuth() {
-        let auth = new Object();
+        let auth = Object();
         let host_node = this.refs.host;
         auth.host = host_node.value;
         let port_node = this.refs.port;
@@ -28,22 +28,22 @@ export default  class HpcAuth extends Component{
                         <form>
                             <div className="form-group">
                                 <label>主机</label>
-                                <input type="text" className="form-control" ref="host" value={host}/>
+                                <input type="text" className="form-control" ref="host" defaultValue={host}/>
                             </div>
 
                             <div className="form-group">
                                 <label>端口</label>
-                                <input type="text" className="form-control" ref="port" value={port}/>
+                                <input type="text" className="form-control" ref="port" defaultValue={port}/>
                             </div>
 
                             <div className="form-group">
                                 <label>用户</label>
-                                <input type="text" className="form-control" ref="user" value={user}/>
+                                <input type="text" className="form-control" ref="user" defaultValue={user}/>
                             </div>
 
                             <div className="form-group">
                                 <label>密码</label>
-                                <input type="password" className="form-control" ref="password" value={password}/>
+                                <input type="password" className="form-control" ref="password" defaultValue={password}/>
                             </div>
                         </form>
                     </div>
