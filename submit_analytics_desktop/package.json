@@ -17,6 +17,8 @@
     "babel-preset-react": "^6.16.0",
     "bootstrap": "^3.3.7",
     "css-loader": "^0.25.0",
+    "d3-array": "^1.0.1",
+    "d3-format": "^1.0.2",
     "d3-time": "^1.0.4",
     "d3-time-format": "^2.0.2",
     "echarts": "^3.3.1",
