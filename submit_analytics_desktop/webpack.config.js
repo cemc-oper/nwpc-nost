@@ -87,7 +87,7 @@ module.exports = {
     devtool: "source-map",
     entry: entry,
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, './app/dist'),
         filename: "[name].entry.js",
         sourceMapFilename: '[file].map'
     },

@@ -2,7 +2,7 @@
   "name": "submit_analytics_desktop",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app/main.js",
+  "main": "app/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules\\.bin\\electron .",
@@ -33,16 +33,16 @@
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.3"
-  },
-  "dependencies": {
+    "webpack": "^1.13.3",
     "bootstrap": "^3.3.7",
     "d3-time": "^1.0.4",
     "d3-time-format": "^2.0.2",
     "echarts": "^3.3.1",
     "element-resize-event": "^2.0.7",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.1.1",
+    "jquery": "^3.1.1"
+  },
+  "dependencies": {
     "ssh2": "^0.5.4"
   }
 }
