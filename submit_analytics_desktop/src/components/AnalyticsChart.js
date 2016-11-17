@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import * as d3time from 'd3-time'
 import * as d3_time_format from 'd3-time-format'
+import * as d3_format from 'd3-format'
+import * as d3_array from 'd3-array'
 import ErrorAnalyzerBarChart from "../components/ErrorAnalyzerBarChart"
 
 export default  class AnalyticsChart extends Component{
@@ -225,6 +227,63 @@ export default  class AnalyticsChart extends Component{
         )
     }
 
+    countHourChart(analytics_result){
+        let padding_zero_formatter = d3_format.format("02");
+        const {data} = analytics_result;
+        const { begin_date, end_date, count_type, count_result } = data;
+
+        let hour_list = d3_array.range(0, 24);
+        let x_data = hour_list.map(function(element, index){
+            return String(padding_zero_formatter(index));
+        });
+
+        let x_axis;
+        let y_axis;
+        let series;
+
+        x_axis = [{
+            type: 'category',
+            data: x_data,
+            axisTick: {
+                alignWithLabel: true
+            },
+            splitArea: {
+                interval: 0
+            }
+        }];
+
+        y_axis = [{
+            type: 'value'
+        }];
+
+        let values = x_data.map(function (item, index) {
+            if (item in count_result)
+                return count_result[item];
+            else
+                return 0;
+        });
+
+        let bar_data = {
+            name: 'count',
+            type: 'bar',
+            barWidth: '50%',
+            data: values
+        };
+        series = [bar_data];
+
+        let chart_data = {
+            x_axis: x_axis,
+            y_axis: y_axis,
+            series: series
+        };
+
+        return (
+            <div>
+                <ErrorAnalyzerBarChart data={chart_data} />
+            </div>
+        )
+    }
+
     render() {
         const {analytics_result} = this.props;
         // console.log('AnalyticsChart', analytics_result);
@@ -247,6 +306,8 @@ export default  class AnalyticsChart extends Component{
                 return this.countSystemChart(analytics_result);
             } else if(count_type == "date-hour") {
                 return this.countDateHourChart(analytics_result);
+            } else if(count_type == "hour") {
+                return this.countHourChart(analytics_result);
             } else {
                     return (
                         <div>

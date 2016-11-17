@@ -155,6 +155,8 @@ def count_handler(args):
                     zero_time = datetime.time(cur_datetime.hour)
                     cur_hour = datetime.datetime.combine(cur_date, zero_time)
                     count_result[cur_hour.strftime("%Y-%m-%d %H:%M:%S")] += 1
+                elif count_type == 'hour':
+                    count_result[record['date'].strftime("%H")] += 1
                 else:
                     raise Exception('count type unsupported', count_type)
 
@@ -207,7 +209,7 @@ def main():
     count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['day', 'weekday', 'date-hour', 'system'])
+                              choices=['day', 'weekday', 'date-hour', 'hour', 'system'])
     count_parser.set_defaults(func=count_handler)
 
     args = parser.parse_args()

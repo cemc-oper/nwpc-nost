@@ -37,6 +37,7 @@ export default  class ErrorAnalyzerConfig extends Component{
                                             <option value="weekday">Weekday</option>
                                             <option value="system">System</option>
                                             <option value="date-hour">Hour by day</option>
+                                            <option value="hour">Hour</option>
                                         </select>
                                     </div>
                                     <div className="form-group">
