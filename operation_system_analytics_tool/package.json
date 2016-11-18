@@ -1,14 +1,13 @@
 {
-  "name": "submit-analytics-tool",
-  "version": "1.0.0",
-  "description": "",
+  "name": "operation-system-analytics-tool",
+  "version": "0.1.0",
+  "description": "A desktop app for operation system running in NWPC.",
   "main": "app/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules\\.bin\\electron .",
     "build": "webpack --colors --progress"
   },
-  "author": "",
+  "author": "perillaroc",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.18.2",
