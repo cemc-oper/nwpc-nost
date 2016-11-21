@@ -1,4 +1,4 @@
-import { SAVE_SESSION } from '../actions/session_action'
+import { SAVE_SESSION, LOAD_SESSION } from '../actions/session_action'
 
 export default function session_reducer(state={
     status: {
@@ -6,11 +6,27 @@ export default function session_reducer(state={
         last_updated: null
     },
     session_list: [
-        { name: 'nwp' },
-        { name: 'nwp_qu' },
-        { name: 'nwp_pd' },
-        { name: 'nwp_sp' },
+        {
+            name: 'nwp',
+            host: 'uranus-bk.hpc.nmic.cn',
+            port: 22,
+            user: 'nwp',
+            password: 'nwpop'
+        },
+        {
+            name: 'nwp_qu',
+            host: 'uranus-bk.hpc.nmic.cn',
+            port: 22,
+            user: 'nwp_qu',
+            password: 'nwpop'
+        }
     ],
+    current_session: {
+        host: "uranus-bk.hpc.nmic.cn",
+        port: 22,
+        user: "nwp",
+        password: "nwpop"
+    },
     save_session: {
 
     },
@@ -22,6 +38,10 @@ export default function session_reducer(state={
         case SAVE_SESSION:
             return Object.assign({}, state, {
                 session_list: state.session_list.concat([action.session])
+            });
+        case LOAD_SESSION:
+            return Object.assign({}, state, {
+                current_session: action.session
             });
         default:
             return state;
