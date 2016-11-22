@@ -1,4 +1,9 @@
-import { SAVE_SESSION, LOAD_SESSION } from '../actions/session_action'
+import {
+    SAVE_SESSION,
+    LOAD_SESSION,
+    REQUEST_TEST_SESSION,
+    RECEIVE_TEST_SESSION_RESPONSE
+} from '../actions/session_action'
 
 export default function session_reducer(state={
     status: {
@@ -31,7 +36,9 @@ export default function session_reducer(state={
 
     },
     test_session: {
-
+        is_open: false,
+        session: null,
+        status: 'unknown'
     }
 }, action) {
     switch(action.type){
@@ -39,10 +46,32 @@ export default function session_reducer(state={
             return Object.assign({}, state, {
                 session_list: state.session_list.concat([action.session])
             });
+
         case LOAD_SESSION:
             return Object.assign({}, state, {
                 current_session: action.session
             });
+
+        case REQUEST_TEST_SESSION:
+            return Object.assign({}, state, {
+                test_session: {
+                    is_open: true,
+                    session: action.session,
+                    status: 'active'
+                }
+            });
+            break;
+
+        case RECEIVE_TEST_SESSION_RESPONSE:
+            let status = action.test_result.data.status;
+            return Object.assign({}, state, {
+                test_session: {
+                    is_open: true,
+                    session: action.session,
+                    status: status
+                }
+            });
+            break;
         default:
             return state;
     }
