@@ -50,7 +50,7 @@ def parse_error_log(log_string):
     return record
 
 
-def range_handler(args):
+def info_handler(args):
     log_file_path = args.log_file_path
 
     command = "head -n 1 {log_file_path}".format(log_file_path=log_file_path)
@@ -104,11 +104,13 @@ def range_handler(args):
 
     result = {
         'app': 'llsubmit4_error_analyzer',
-        'type': 'range',
+        'type': 'info',
         'timestamp': datetime.datetime.now().timestamp(),
         'data': {
-            'start_date_time': start_date.strftime('%Y-%m-%dT%H:%M:%S%Z'),
-            'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z')
+            'range': {
+                'start_date_time': start_date.strftime('%Y-%m-%dT%H:%M:%S%Z'),
+                'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z')
+            }
         }
     }
     if args.pretty_print:
@@ -197,10 +199,10 @@ def main():
 
     sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
 
-    range_parser = sub_parsers.add_parser('range', description="get time range in error log file.")
-    range_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
-    range_parser.add_argument("--pretty-print", help="print pretty result.", action="store_true")
-    range_parser.set_defaults(func=range_handler)
+    info_parser = sub_parsers.add_parser('info', description="get log file info.")
+    info_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
+    info_parser.add_argument("--pretty-print", help="print pretty result.", action="store_true")
+    info_parser.set_defaults(func=info_handler)
 
     count_parser = sub_parsers.add_parser('count', description="count errors in error log file.")
     count_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
