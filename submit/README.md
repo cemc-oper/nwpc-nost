@@ -1,29 +1,24 @@
-# llsubmt2 / llsubmi4
+# llsubmit2 / llsubmit4
 
-SMS作业提交脚本
+SMS 作业提交脚本
 
 ## 简介
 
-用于在 SMS 业务系统调度软件中，将作业脚本提交到 LoadLeveler 中。针对 HPC 中 LoadLeveler 的不稳定情况，进行诸多优化。
+llsubmit2 和 llsubmit4 脚本用于将 SMS (Supervisor Monitoring Scheduler) 业务系统调度软件中的作业脚本提交到 [LoadLeveler](#) 中。
 
-检测提交是否成功：
+针对 IBM 服务器中 LoadLeveler 的不稳定情况，进行诸多优化。
 
-* 提交成功时，将 loadleveler 的作业号保存到 SMS 任务的 SMSRID 变量；
-* 提交失败时，llsubmit2 将 SMS 任务设为 aborted 状态，llsubmit4 根据设置自动重新提交脚本。
+## 安装
 
-提供自动延时提交功能，避免同一时刻提交大量作业。
-
-## 环境
-
-本项目目前仅支持从 SMS 提交任务到 LoadLeveler 中。另外，系统中需要安装 python。
-
-## 安装和配置
+llsubmit2 和 llsubmit4 脚本目前仅在 IBM AIX 系统中测试过。另外，系统中需要安装 python。
 
 将脚本拷贝到 SMS 服务器可以访问的目录，建议拷贝到 $HOME/bin 目录下，并将该目录添加到 PATH 环境变量中。
 
 ~~~
 export PATH=$HOME/bin:$PATH
 ~~~
+
+## 配置
 
 脚本需要使用环境变量 WORKDIR，如果尚未设置，请在 profile 中设置或替换脚本中的 WORKDIR 变量。
 
@@ -55,7 +50,25 @@ llsubmit2 %SMSJOB% %SMSNAME% [%SMSJOBOUT%]
 llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO% 
 ~~~
 
-## 日志
+### 在SMS中使用
+
+将 SMS 任务的 SMSCMD 变量设为上面的命令，覆盖默认的任务运行命令。
+
+## 功能
+
+### 检测提交状态
+
+提交成功时，将 [LoadLeveler](#) 的作业号保存到 SMS 任务的 SMSRID 变量。
+
+提交失败时，llsubmit2 将 SMS 任务设为 aborted 状态，llsubmit4 根据设置自动重新提交脚本。
+
+### 延迟提交
+
+提供自动延时提交功能，避免同一时刻提交大量作业导致LoadLeveler 服务无法响应的情况。
+
+llsubmit4 脚本会根据重复提交次数，修改延迟提交时间窗。
+
+### 日志
 
 llsubmit4 提供下列日志：
 
@@ -67,10 +80,13 @@ llsubmit4 提供下列日志：
 
 ## 后续开发
 
-使用 ecflow 替代 sms 已基本敲定，后续将开发 ecflow 的作业提交脚本。
+使用 [ecflow](#) 替代 sms 已基本敲定，后续将开发 ecflow 的作业提交脚本。
 
 ## 致谢
 
 本项目在已有 llsubmit2 脚本基础上开发，特此向其开发者表示敬意。
 
 在开发过程中收到多位同事的指导，感谢他们提供的诸多建议。
+
+[ecflow]: https://software.ecmwf.int/wiki/display/ECFLOW/Home
+[LoadLeveler]: http://www.ibm.com/systems/power/software/loadleveler/
