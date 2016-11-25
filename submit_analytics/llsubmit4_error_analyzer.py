@@ -66,6 +66,9 @@ def info_handler(args):
                 'output': {
                     'std_out': output_string,
                     'std_err': error_string
+                },
+                'request': {
+                    'log_file_path': log_file_path,
                 }
             }
         }
@@ -88,6 +91,9 @@ def info_handler(args):
                 'output': {
                     'std_out': output_string,
                     'std_err': error_string
+                },
+                'request': {
+                    'log_file_path': log_file_path,
                 }
             }
         }
@@ -110,6 +116,9 @@ def info_handler(args):
             'range': {
                 'start_date_time': start_date.strftime('%Y-%m-%dT%H:%M:%S%Z'),
                 'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z')
+            },
+            'request': {
+                'log_file_path': log_file_path,
             }
         }
     }
@@ -170,6 +179,9 @@ def count_handler(args):
             'timestamp': datetime.datetime.now().timestamp(),
             'data': {
                 'error_message': 'file is not found',
+                'request': {
+                    'log_file_path': log_file_path,
+                }
             }
         }
         print(json.dumps(result))
@@ -183,7 +195,10 @@ def count_handler(args):
             'count_type': count_type,
             'begin_date': begin_date.strftime('%Y-%m-%d'),
             'end_date': end_date.strftime('%Y-%m-%d'),
-            'count_result': count_result
+            'count_result': count_result,
+            'request': {
+                'log_file_path': log_file_path,
+            }
         }
     }
 
