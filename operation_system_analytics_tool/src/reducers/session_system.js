@@ -24,6 +24,20 @@ export default function session_reducer(state={
             port: 22,
             user: 'nwp_qu',
             password: 'nwpop'
+        },
+        {
+            name: 'nwp_pd',
+            host: 'uranus-bk.hpc.nmic.cn',
+            port: 22,
+            user: 'nwp_pd',
+            password: 'nwpop'
+        },
+        {
+            name: 'nwp_sp',
+            host: 'uranus-bk.hpc.nmic.cn',
+            port: 22,
+            user: 'nwp_sp',
+            password: 'nwpop'
         }
     ],
     current_session: {
