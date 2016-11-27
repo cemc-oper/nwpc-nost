@@ -44,10 +44,38 @@ nwpc_pd | nwpc_pd
 llsubmit2 %SMSJOB% %SMSNAME% [%SMSJOBOUT%]
 ~~~
 
+各参数均为SMS变量，含义如下：
+
+* SMSJOB：任务脚本路径
+* SMSNAME：SMS中节点的路径
+* SMSJOBOUT：重定向标准输出的文件，默认将 SMSJOB 的 *.job[0-9] 替换为 *.[0-9]
+
+使用示例
+
+~~~
+llsubmit2 /cma/g1/nwp/SMSOUT/gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156.job1 \
+    /gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156 \
+    /gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156.1
+~~~
+
 ### llsubmit4
 
 ~~~
 llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO% 
+~~~
+
+各参数均为SMS变量，含义如下：
+
+* SMSJOB：任务脚本路径
+* SMSNAME：SMS中节点的路径
+* SMSTRIES：自动重复提交的次数
+* SMSTRYNO：当前提交次数
+
+使用示例
+
+~~~
+llsubmit4 /cma/g1/nwp/SMSOUT/gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156.job1 \
+    /gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156 2 1
 ~~~
 
 ### 在SMS中使用
