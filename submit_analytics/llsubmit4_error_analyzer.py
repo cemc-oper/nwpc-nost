@@ -153,7 +153,7 @@ def count_handler(args):
                         continue
 
                 # check count_type
-                if count_type == 'day':
+                if count_type == 'date':
                     count_result[record['date'].strftime("%Y-%m-%d")] += 1
                 elif count_type == 'weekday':
                     count_result[record['date'].weekday()] += 1
@@ -206,7 +206,7 @@ def count_handler(args):
 
 
 def get_value(record, name):
-    if name == 'day':
+    if name == 'date':
         return record['date'].strftime("%Y-%m-%d")
     elif name == 'weekday':
         return record['date'].weekday()
@@ -316,7 +316,7 @@ def main():
     count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['day', 'weekday', 'date-hour', 'hour', 'system', 'hour/weekday'])
+                              choices=['date', 'weekday', 'date-hour', 'hour', 'system', 'hour/weekday'])
     count_parser.set_defaults(func=count_handler)
 
     grid_parser = sub_parsers.add_parser('grid', description="get grid result.")
