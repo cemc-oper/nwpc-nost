@@ -50,6 +50,25 @@ def parse_error_log(log_string):
     return record
 
 
+def get_record_field_value(record, name):
+    if name == 'date':
+        return record['date'].strftime("%Y-%m-%d")
+    elif name == 'weekday':
+        return record['date'].weekday()
+    elif name == 'system':
+        return get_system_from_path(record['info']['path'])
+    elif name == 'date-hour':
+        cur_datetime = record['date']
+        cur_date = cur_datetime.date()
+        zero_time = datetime.time(cur_datetime.hour)
+        cur_hour = datetime.datetime.combine(cur_date, zero_time)
+        return cur_hour.strftime("%Y-%m-%d %H:%M:%S")
+    elif name == 'hour':
+        return record['date'].strftime("%H")
+    else:
+        raise Exception('name unsupported', name)
+
+
 def info_handler(args):
     log_file_path = args.log_file_path
 
@@ -152,24 +171,7 @@ def count_handler(args):
                     if record['date'].date() >= end_date.date():
                         continue
 
-                # check count_type
-                if count_type == 'date':
-                    count_result[record['date'].strftime("%Y-%m-%d")] += 1
-                elif count_type == 'weekday':
-                    count_result[record['date'].weekday()] += 1
-                elif count_type == 'system':
-                    system = get_system_from_path(record['info']['path'])
-                    count_result[system] += 1
-                elif count_type == 'date-hour':
-                    cur_datetime = record['date']
-                    cur_date = cur_datetime.date()
-                    zero_time = datetime.time(cur_datetime.hour)
-                    cur_hour = datetime.datetime.combine(cur_date, zero_time)
-                    count_result[cur_hour.strftime("%Y-%m-%d %H:%M:%S")] += 1
-                elif count_type == 'hour':
-                    count_result[record['date'].strftime("%H")] += 1
-                else:
-                    raise Exception('count type unsupported', count_type)
+                count_result[get_record_field_value(record, count_type)] += 1
 
     except FileNotFoundError as e:
         result = {
@@ -205,25 +207,6 @@ def count_handler(args):
     print(json.dumps(result, indent=4))
 
 
-def get_value(record, name):
-    if name == 'date':
-        return record['date'].strftime("%Y-%m-%d")
-    elif name == 'weekday':
-        return record['date'].weekday()
-    elif name == 'system':
-        return get_system_from_path(record['info']['path'])
-    elif name == 'date-hour':
-        cur_datetime = record['date']
-        cur_date = cur_datetime.date()
-        zero_time = datetime.time(cur_datetime.hour)
-        cur_hour = datetime.datetime.combine(cur_date, zero_time)
-        return cur_hour.strftime("%Y-%m-%d %H:%M:%S")
-    elif name == 'hour':
-        return record['date'].strftime("%H")
-    else:
-        raise Exception('name unsupported', name)
-
-
 def grid_handler(args):
     begin_date = args.begin_date
     end_date = args.end_date
@@ -249,8 +232,8 @@ def grid_handler(args):
                     if record['date'].date() >= end_date.date():
                         continue
 
-                x_value = get_value(record, x_type)
-                y_value = get_value(record, y_type)
+                x_value = get_record_field_value(record, x_type)
+                y_value = get_record_field_value(record, y_type)
 
                 if x_value not in grid_result:
                     grid_result[x_value] = dict()
