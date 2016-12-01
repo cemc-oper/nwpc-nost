@@ -183,6 +183,9 @@ def count_handler(args):
                 'error_message': 'file is not found',
                 'request': {
                     'log_file_path': log_file_path,
+                    'begin_date': begin_date.strftime('%Y-%m-%d'),
+                    'end_date': end_date.strftime('%Y-%m-%d'),
+                    'count_type': count_type
                 }
             }
         }
@@ -200,6 +203,12 @@ def count_handler(args):
             'count_result': count_result,
             'request': {
                 'log_file_path': log_file_path,
+                'begin_date': begin_date.strftime('%Y-%m-%d'),
+                'end_date': end_date.strftime('%Y-%m-%d'),
+                'count_type': count_type
+            },
+            'response': {
+                'count_result': count_result,
             }
         }
     }
