@@ -64,7 +64,7 @@ def get_record_field_value(record, name):
         cur_hour = datetime.datetime.combine(cur_date, zero_time)
         return cur_hour.strftime("%Y-%m-%d %H:%M:%S")
     elif name == 'hour':
-        return record['date'].strftime("%H")
+        return record['date'].hour
     else:
         raise Exception('name unsupported', name)
 
