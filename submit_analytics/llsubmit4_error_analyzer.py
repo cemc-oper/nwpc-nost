@@ -318,7 +318,7 @@ def main():
     grid_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     grid_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     grid_parser.add_argument("--x-type", dest="x_type", help="x axis type", required=True,
-                             choices=['hour'])
+                             choices=['hour', 'weekday'])
     grid_parser.add_argument("--y-type", dest="y_type", help="y axis type", required=True,
                              choices=['weekday', 'system', 'date'])
     grid_parser.set_defaults(func=grid_handler)
