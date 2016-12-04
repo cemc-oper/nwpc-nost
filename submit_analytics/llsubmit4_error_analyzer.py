@@ -308,7 +308,7 @@ def main():
     count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['date', 'weekday', 'date-hour', 'hour', 'system', 'hour/weekday'])
+                              choices=['date', 'weekday', 'date-hour', 'hour', 'system'])
     count_parser.set_defaults(func=count_handler)
 
     grid_parser = sub_parsers.add_parser('grid', description="get grid result.")
@@ -317,7 +317,8 @@ def main():
     grid_parser.add_argument("--end-date", help="end date, YYYY-MM-DD")
     grid_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     grid_parser.add_argument("--end-time", help="end time, hh:mm:ss")
-    grid_parser.add_argument("--x-type", dest="x_type", help="x axis type", required=True, choices=['hour'])
+    grid_parser.add_argument("--x-type", dest="x_type", help="x axis type", required=True,
+                             choices=['hour'])
     grid_parser.add_argument("--y-type", dest="y_type", help="y axis type", required=True,
                              choices=['weekday', 'system', 'date'])
     grid_parser.set_defaults(func=grid_handler)
