@@ -122,6 +122,30 @@ def info_handler(args):
     record = parse_error_log(output_string)
     end_date = record['date']
 
+    command = "wc -l {log_file_path}".format(log_file_path=log_file_path)
+    output_string, error_string = run_command(command)
+    if len(error_string) > 0:
+        result = {
+            'app': 'llsubmit4_error_analyzer',
+            'type': 'range',
+            'timestamp': datetime.datetime.now().timestamp(),
+            'error': 'tail_command_error',
+            'data': {
+                'error_message': 'error in executing wc command.',
+                'output': {
+                    'std_out': output_string,
+                    'std_err': error_string
+                },
+                'request': {
+                    'log_file_path': log_file_path,
+                }
+            }
+        }
+        print(json.dumps(result))
+        return
+
+    line_count = int(output_string.strip().split(' ')[0])
+
     # with open(log_file_path, 'r') as log_file:
     #     for line in log_file:
     #         record = parse_error_log(line)
@@ -134,7 +158,8 @@ def info_handler(args):
         'data': {
             'range': {
                 'start_date_time': start_date.strftime('%Y-%m-%dT%H:%M:%S%Z'),
-                'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z')
+                'end_date_time': end_date.strftime('%Y-%m-%dT%H:%M:%S%Z'),
+                'count': line_count
             },
             'request': {
                 'log_file_path': log_file_path,
