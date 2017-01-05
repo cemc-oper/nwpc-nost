@@ -1,29 +1,29 @@
 nwpc-operation-system-tool
 =====
 
-NWPC 业务系统工具套件，包括以下组件：
+NWPC operation system tool suite, including such components:
 
-* SMS 作业提交脚本
-* 业务系统分析工具
+* A job Submission script using in SMS.
+* Analytics tool for operation systems.
 
-简介
+Introduction
 ----
 
-### SMS 作业提交脚本
+### SMS Job Submission Script
 
-将 SMS 作业脚本提交到 LoadLeveler 的脚本，检测提交是否成功。
+Submit job scripts of SMS to LoadLeveler, and check whether it is succeeded.
 
-### 业务系统分析工具
+### Operation System Analytics Tool
 
-分析SMS作业提交失败日志的桌面应用软件。
+A desktop application to analyse the error log of failed SMS job submissions.
 
+Please refer to README.md in each component's directory for detailed introductions.
 
-具体说明请参阅各个组件的 README.md 文件。
-
-许可
+License
 -------
 
-本项目遵循 [GPL-3.0](#) 协议。  
-Copyright &copy; 2016, Perilla Roc
+Copyright &copy; 2016-2017, Perilla Roc.
+
+nwpc-operation-system-tool is licensed under [GPL-3.0](#). 
 
 [GPL-3.0]: http://www.gnu.org/licenses/gpl-3.0.en.html
