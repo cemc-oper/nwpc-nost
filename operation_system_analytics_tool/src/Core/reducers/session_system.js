@@ -3,7 +3,7 @@ import {
     LOAD_SESSION,
     REQUEST_TEST_SESSION,
     RECEIVE_TEST_SESSION_RESPONSE
-} from '../actions/session_action'
+} from '../../SubmitLogAnalytics/actions/session_action'
 
 export default function session_reducer(state={
     status: {
