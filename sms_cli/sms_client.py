@@ -1,5 +1,4 @@
-#!/cma/g3/wangdp/usr/local/bin/python
-from __future__ import print_function
+#!/cma/g3/wangdp/usr/local/bin/python3
 import argparse
 import subprocess
 
