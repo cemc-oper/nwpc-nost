@@ -4,18 +4,26 @@ nwpc-operation-system-tool
 NWPC operation system tool suite, including such components:
 
 * A job submission script using in SMS.
-* A analyze to error log of the script above.
+* CLI commands used to manipulate SMS client and SMS server.
 
 Introduction
 ----
 
-### SMS Job Submission Script
+### SMS Job Submission Tool
 
-Submit job scripts of SMS to LoadLeveler, and check whether it is succeeded.
+Including SMS Job Submission script and its analytics script:
 
-### SMS Job Submission Error Log Analytics Script
+#### Submission script
 
-A script to analyze the error log of failed SMS job submissions.
+Submit job scripts of SMS to LoadLeveler, and check whether the submission is succeeded.
+
+#### Submission Error Log Analytics Script
+
+A script to analyze the error log of SMS job submissions which are failed.
+
+### SMS CLI
+
+CLI commands to manipulate sms client and sms server.
 
 Please refer to README.md in each component's directory for detailed introductions.
 
