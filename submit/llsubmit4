@@ -101,8 +101,23 @@ else
   nameofsms=nwpc_$USER
 fi
 
-# wait for a random time between SMSTRYNO and 5 seconds.
-/usr/bin/python -c 'import random,time;random_seconds=random.uniform('${smstryno}',5);time.sleep(random_seconds);'
+# wait for a random time
+/usr/bin/python <<EOF
+import random,time
+no=${smstryno}
+if no<=1:
+    min_second=0
+    max_second=5
+elif no==2:
+    min_second=10
+    max_second=20
+else:
+    min_second=30
+    max_second=60
+random_seconds=random.uniform(min_second,max_second)
+print random_seconds
+time.sleep(random_seconds)
+EOF
 
 if [[ ! -n "${jobout}" ]]
 then
