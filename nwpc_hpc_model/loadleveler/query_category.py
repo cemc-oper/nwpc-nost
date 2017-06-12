@@ -50,7 +50,7 @@ class QueryCategoryList(list):
         for i in range(0, len(self)):
             if self[i].id == category_id:
                 return i
-        return -1
+        raise ValueError("not found")
 
     def category_from_id(self, category_id):
         for a_category in self:

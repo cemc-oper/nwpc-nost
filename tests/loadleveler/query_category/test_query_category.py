@@ -1,7 +1,4 @@
-import unittest
-from unittest import mock
-import os
-import importlib
+import pytest
 import copy
 
 from nwpc_hpc_model.loadleveler import query_category
@@ -9,7 +6,7 @@ from nwpc_hpc_model.loadleveler import record_parser
 from nwpc_hpc_model.loadleveler import value_saver
 
 
-class TestQueryCategory(unittest.TestCase):
+class TestQueryCategory:
     def setUp(self):
         pass
 
@@ -26,9 +23,9 @@ class TestQueryCategory(unittest.TestCase):
         new_category.id = "llq.submitted"
         new_category.record_parser.label = "Submitted"
 
-        self.assertNotEqual(category.id, new_category.id)
-        self.assertNotEqual(category.record_parser, new_category.record_parser)
-        self.assertNotEqual(category.record_parser.label, new_category.record_parser.label)
+        assert category.id != new_category.id
+        assert category.record_parser is not new_category.record_parser
+        assert category.record_parser.label is not new_category.record_parser.label
 
     def test_create_query_category(self):
         id_category = query_category.QueryCategory(
@@ -40,12 +37,12 @@ class TestQueryCategory(unittest.TestCase):
             value_saver_class=value_saver.StringSaver
         )
 
-        self.assertEqual(id_category.id, "llq.id")
-        self.assertEqual(id_category.display_name, "Id")
-        self.assertEqual(id_category.label, "Job Step Id")
-        self.assertIsInstance(id_category.record_parser, record_parser.DetailLabelParser)
-        self.assertEqual(id_category.record_parser.label, "Job Step Id")
-        self.assertIsInstance(id_category.value_saver, value_saver.StringSaver)
+        assert id_category.id == "llq.id"
+        assert id_category.display_name == "Id"
+        assert id_category.label == "Job Step Id"
+        assert isinstance(id_category.record_parser, record_parser.DetailLabelParser)
+        assert id_category.record_parser.label == "Job Step Id"
+        assert isinstance(id_category.value_saver, value_saver.StringSaver)
 
     def test_llq_detail_category_list(self):
         category_list = query_category.QueryCategoryList()
@@ -68,15 +65,18 @@ class TestQueryCategory(unittest.TestCase):
                                          value_saver.JobStatusSaver, ())
         ])
 
-        self.assertEqual(len(category_list), 5)
+        assert len(category_list) == 5
 
-        self.assertEqual(category_list.index_from_id("llq.id"), 0)
-        self.assertEqual(category_list.index_from_id("llclass.id"), -1)
-        self.assertTrue(category_list.contains_id("llq.id"))
-        self.assertFalse(category_list.contains_id("llclass.id"))
-        self.assertEqual(category_list.category_from_id("llq.id").id, "llq.id")
-        self.assertIsNone(category_list.category_from_id("llclass.id"))
+        assert category_list.index_from_id("llq.id") == 0
 
-        self.assertEqual(category_list.index_from_label("Class"), 2)
-        self.assertTrue(category_list.contains_label("Class"))
-        self.assertEqual(category_list.category_from_label("Class").id, "llq.class")
+        with pytest.raises(ValueError):
+            category_list.index_from_id("llclass.id")
+
+        assert category_list.contains_id("llq.id")
+        assert not category_list.contains_id("llclass.id")
+        assert category_list.category_from_id("llq.id").id == "llq.id"
+        assert category_list.category_from_id("llclass.id") is None
+
+        assert category_list.index_from_label("Class") == 2
+        assert category_list.contains_label("Class")
+        assert category_list.category_from_label("Class").id == "llq.class"
