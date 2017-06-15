@@ -52,7 +52,9 @@ def parse_error_log(log_string):
 
 
 def get_record_field_value(record, name):
-    if name == 'date':
+    if name == 'month':
+        return record['date'].strftime("%Y-%m")
+    elif name == 'date':
         return record['date'].strftime("%Y-%m-%d")
     elif name == 'weekday':
         return record['date'].weekday()
@@ -334,7 +336,7 @@ def main():
     count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
     count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
     count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['date', 'weekday', 'date-hour', 'hour', 'system'])
+                              choices=['month', 'date', 'weekday', 'date-hour', 'hour', 'system'])
     count_parser.set_defaults(func=count_handler)
 
     grid_parser = sub_parsers.add_parser('grid', description="get grid result.")
