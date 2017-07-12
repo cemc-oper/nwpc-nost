@@ -13,7 +13,7 @@ from nwpc_hpc_model.loadleveler import value_saver
 from nwpc_hpc_model.loadleveler.filter_condition import get_property_data
 
 
-config_file_name = "loadleveler_status.develop.config"
+config_file_name = "loadleveler_status.config"
 default_config_file_path = os.path.join(os.path.dirname(__file__), "conf", config_file_name)
 
 
