@@ -152,8 +152,8 @@ def loadleveler_client_tool():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="""
-    DESCRIPTION
-        LoadLeveler client tool.""")
+DESCRIPTION
+    LoadLeveler client tool.""")
 
     sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
 
@@ -188,7 +188,10 @@ def loadleveler_client_tool():
     detail_parser.set_defaults(func=detail_handler)
 
     args = parser.parse_args()
-    args.func(args)
+    if 'func' in args:
+        args.func(args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
