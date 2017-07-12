@@ -93,28 +93,6 @@ def get_config(config_file_path):
 
 
 def query_handler(args):
-    """
-    :param args:
-    :return: None
-
-    post data: {
-        message: json_string
-    }
-
-    message: {
-        'app': 'nwpc_hpc_collector.loadleveler_status',
-        'type': 'command',
-        'time': "%Y-%m-%dT%H:%M:%S",
-        'data': {
-            'request': {
-                'sub_command': 'collect',
-            },
-            'response': model_dict
-        }
-    }
-
-    model_dict: see nwpc_hpc_model.loadleveler.QueryModel.to_dict()
-    """
     if args.config:
         config_file_path = args.config
     else:
@@ -138,6 +116,38 @@ def query_handler(args):
         ))
 
 
+def detail_handler(args):
+    if args.config:
+        config_file_path = args.config
+    else:
+        config_file_path = default_config_file_path
+    config = get_config(config_file_path)
+
+    model_dict = get_llq_detail_query_response(config, args.params)
+
+    for an_item in model_dict['items']:
+        job_id = get_property_data(an_item, "llq.id")
+        job_class = get_property_data(an_item, "llq.class")
+        job_owner = get_property_data(an_item, "llq.owner")
+        job_script = get_property_data(an_item, "llq.job_script")
+        job_status = get_property_data(an_item, "llq.status")
+        job_err = get_property_data(an_item, "llq.err")
+        job_out = get_property_data(an_item, "llq.out")
+        print("""{job_id} {job_class} {job_owner} {job_status}
+  Script: {job_script}
+     Out: {job_out}
+     Err: {job_err}
+""".format(
+            job_id=job_id,
+            job_class=job_class,
+            job_owner=job_owner,
+            job_script=job_script,
+            job_status=job_status,
+            job_err=job_err,
+            job_out=job_out
+        ))
+
+
 def loadleveler_client_tool():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -147,7 +157,7 @@ def loadleveler_client_tool():
 
     sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
 
-    query_parser = sub_parsers.add_parser('query', description="collect llq command result.")
+    query_parser = sub_parsers.add_parser('query', description="llq query.")
     query_parser.add_argument(
         "-c", "--config",
         help="config file, default config file is ./conf/{config_file_name}".format(
@@ -160,10 +170,25 @@ def loadleveler_client_tool():
         type=str,
         default="",
     )
+    query_parser.set_defaults(func=query_handler)
+
+    detail_parser = sub_parsers.add_parser('detail', description="llq detail query.")
+    detail_parser.add_argument(
+        "-c", "--config",
+        help="config file, default config file is ./conf/{config_file_name}".format(
+            config_file_name=config_file_name
+        )
+    )
+    detail_parser.add_argument(
+        "-p", "--params",
+        help="llq params",
+        type=str,
+        default="",
+    )
+    detail_parser.set_defaults(func=detail_handler)
 
     args = parser.parse_args()
-    if args.sub_command == "query":
-        query_handler(args)
+    args.func(args)
 
 
 if __name__ == "__main__":
