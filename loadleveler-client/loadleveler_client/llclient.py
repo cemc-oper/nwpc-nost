@@ -1,10 +1,7 @@
-#!/cma/g3/wangdp/usr/local/bin/python3
 # coding=utf-8
 import argparse
-import datetime
 import json
 import os
-import sys
 import subprocess
 
 from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel, QueryProperty, QueryItem

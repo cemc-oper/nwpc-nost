@@ -33,6 +33,11 @@ setup(
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
+    include_package_data=True,
+    package_data = {
+        'loadleveler_client': ['conf/*.config']
+    },
+
     install_requires=[],
 
     # extras_require={
