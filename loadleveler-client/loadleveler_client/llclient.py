@@ -14,6 +14,15 @@ config_file_name = "loadleveler_status.config"
 default_config_file_path = os.path.join(os.path.dirname(__file__), "conf", config_file_name)
 
 
+def get_user_name() -> str:
+    if 'USER' in os.environ:
+        return os.environ["USER"]
+    else:
+        cmquota_command = "whoami"
+        pipe = subprocess.Popen([cmquota_command], stdout=subprocess.PIPE, shell=True)
+        return pipe.communicate()[0].decode().rstrip()
+
+
 def build_category_list(category_list_config):
     category_list = QueryCategoryList()
     for an_item in category_list_config:
@@ -104,7 +113,7 @@ def query_handler(args):
         job_owner = get_property_data(an_item, "llq.owner")
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
-        print("{job_id} {job_class} {job_owner} {job_script} {job_status}".format(
+        print("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
             job_id=job_id,
             job_class=job_class,
             job_owner=job_owner,
@@ -130,7 +139,7 @@ def detail_handler(args):
         job_status = get_property_data(an_item, "llq.status")
         job_err = get_property_data(an_item, "llq.err")
         job_out = get_property_data(an_item, "llq.out")
-        print("""{job_id} {job_class} {job_owner} {job_status}
+        print("""{job_id} {job_status} {job_class} {job_owner}
   Script: {job_script}
      Out: {job_out}
      Err: {job_err}
@@ -142,6 +151,34 @@ def detail_handler(args):
             job_status=job_status,
             job_err=job_err,
             job_out=job_out
+        ))
+
+
+def llqn_handler(args):
+    if args.config:
+        config_file_path = args.config
+    else:
+        config_file_path = default_config_file_path
+    config = get_config(config_file_path)
+
+    model_dict = get_llq_detail_query_response(config)
+
+    user_name = get_user_name()
+
+    for an_item in model_dict['items']:
+        job_id = get_property_data(an_item, "llq.id")
+        job_class = get_property_data(an_item, "llq.class")
+        job_owner = get_property_data(an_item, "llq.owner")
+        if user_name not in job_owner:
+            continue
+        job_script = get_property_data(an_item, "llq.job_script")
+        job_status = get_property_data(an_item, "llq.status")
+        print("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+            job_id=job_id,
+            job_class=job_class,
+            job_owner=job_owner,
+            job_script=job_script,
+            job_status=job_status
         ))
 
 
@@ -183,6 +220,15 @@ DESCRIPTION
         default="",
     )
     detail_parser.set_defaults(func=detail_handler)
+
+    llqn_parser = sub_parsers.add_parser('llqn', description="llqn query.")
+    llqn_parser.add_argument(
+        "-c", "--config",
+        help="config file, default config file is ./conf/{config_file_name}".format(
+            config_file_name=config_file_name
+        )
+    )
+    llqn_parser.set_defaults(func=llqn_handler)
 
     args = parser.parse_args()
     if 'func' in args:
