@@ -154,16 +154,8 @@ def detail_handler(args):
         ))
 
 
-def llqn_handler(args):
-    if args.config:
-        config_file_path = args.config
-    else:
-        config_file_path = default_config_file_path
-    config = get_config(config_file_path)
-
+def llqn(config, user_name):
     model_dict = get_llq_detail_query_response(config)
-
-    user_name = get_user_name()
 
     for an_item in model_dict['items']:
         job_id = get_property_data(an_item, "llq.id")
@@ -180,6 +172,28 @@ def llqn_handler(args):
             job_script=job_script,
             job_status=job_status
         ))
+
+
+def llqn_handler(args):
+    if args.config:
+        config_file_path = args.config
+    else:
+        config_file_path = default_config_file_path
+    config = get_config(config_file_path)
+    user_name = get_user_name()
+
+    llqn(config, user_name)
+
+
+def llqu_handler(args):
+    if args.config:
+        config_file_path = args.config
+    else:
+        config_file_path = default_config_file_path
+    config = get_config(config_file_path)
+    user_name = args.user_name
+
+    llqn(config, user_name)
 
 
 def loadleveler_client_tool():
@@ -229,6 +243,22 @@ DESCRIPTION
         )
     )
     llqn_parser.set_defaults(func=llqn_handler)
+
+    llqu_parser = sub_parsers.add_parser('llqu', description="llqn query.")
+    llqu_parser.add_argument(
+        "-c", "--config",
+        help="config file, default config file is ./conf/{config_file_name}".format(
+            config_file_name=config_file_name
+        )
+    )
+    llqu_parser.add_argument(
+        'user_name',
+        metavar='user_name',
+        type=str,
+        help='user name'
+    )
+
+    llqu_parser.set_defaults(func=llqu_handler)
 
     args = parser.parse_args()
     if 'func' in args:
