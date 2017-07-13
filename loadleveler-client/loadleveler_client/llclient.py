@@ -4,7 +4,7 @@ import json
 import os
 import subprocess
 
-from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel, QueryProperty, QueryItem
+from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel
 from nwpc_hpc_model.loadleveler import record_parser
 from nwpc_hpc_model.loadleveler import value_saver
 from nwpc_hpc_model.loadleveler.filter_condition import get_property_data

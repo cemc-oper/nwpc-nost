@@ -34,7 +34,7 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     include_package_data=True,
-    package_data = {
+    package_data={
         'loadleveler_client': ['conf/*.config']
     },
 

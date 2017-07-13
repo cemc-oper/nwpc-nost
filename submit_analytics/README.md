@@ -1,18 +1,19 @@
 # Submit Analytics
 
-llsubmit4 日志分析工具
+A analytics tool for log of llsubmit4.
 
-## 简介
+## Introduction
 
-分析 llsubmit4 的提交失败日志.
+Analysis the Submission error log of llsubmit4.
 
-## 一维汇总
+## One-dimensional summary
 
-按单个维度汇总数据。
+Summarize data by a single dimension.
 
-### 逐日提交失败个数
+### Submission failures per day
 
-指定日期范围内每天提交失败的任务个数，忽略个数为0的项目。
+The number of tasks which is failed to submit per day in the specified date range, 
+ignore items which is zero.
 
 ~~~
 {
@@ -26,9 +27,10 @@ llsubmit4 日志分析工具
 }
 ~~~
 
-### 逐小时提交失败个数
+### Submission failures per hour
 
-指定日期范围内每小时提交失败的任务个数，忽略个数为0的项目。
+The number of tasks which is failed to submit per hour in the specified date range, 
+ignore items which are zero.
 
 ~~~
 {
@@ -45,9 +47,10 @@ llsubmit4 日志分析工具
 },
 ~~~
 
-### 按业务系统汇总
+### Submission failures per system
 
-指定日期范围内各个业务系统提交失败的任务个数，忽略个数为0的项目。
+The number of tasks which is failed to submit by each system in the specified date range,
+ignore items which are zero.
 
 ~~~
 {
@@ -58,9 +61,10 @@ llsubmit4 日志分析工具
 }
 ~~~
 
-### 按星期汇总
+### Summarize by week
 
-指定日期范围内按星期分类的任务个数，忽略个数为0的项目。
+The number of tasks grouped by week in the specified date range,
+ignore items which are zero.
 
 ~~~
 {
@@ -74,9 +78,10 @@ llsubmit4 日志分析工具
 },
 ~~~
 
-### 按小时汇总
+### Summarize by hour
 
-指定日期范围内按小时分类的任务个数，忽略个数为0的项目。
+The number of tasks grouped by hour in the specified date range,
+ignore items which are zero.
 
 ~~~
 {
@@ -93,24 +98,24 @@ llsubmit4 日志分析工具
 }
 ~~~
 
-## 二维汇总
+## Two-dimensional summary
 
-按两个维度汇总数据。
+Summarize data by two dimensions.
 
-### x轴
+### X-axis
 
-* 小时
-* 星期
+* hour
+* week
 
-### y轴
+### Y-axis
 
-* 星期
-* 系统
-* 日期
+* week
+* system
+* date
 
-### 示例
+### Example
 
-#### 小时/星期
+#### hour/week
 
 ~~~
 {
@@ -132,7 +137,7 @@ llsubmit4 日志分析工具
 }
 ~~~
 
-#### 星期/系统
+#### week/system
 
 ~~~
 {
@@ -156,11 +161,11 @@ llsubmit4 日志分析工具
 }
 ~~~
 
-## 查询功能
+## Query
 
-### 日志信息
+### Log information
 
-获取日志的概要信息。
+Get summary information for a log.
 
 ~~~
 {
@@ -173,10 +178,10 @@ llsubmit4 日志分析工具
 ~~~
 
 
-## 安装
+## Installation
 
-需要 python 3 环境。
+Please use Python 3.
 
-## 使用
+## Run
 
-请使用 llsubmit4_error_analyzer.py --help 查询使用方法。
+Please run llsubmit4_error_analyzer.py --help to see the usage.

@@ -25,6 +25,10 @@ A script to analyze the error log of SMS job submissions which are failed.
 
 CLI commands to manipulate sms client and sms server.
 
+### LoadLeveler Client
+
+A CLI client for LoadLeveler in NWPC.
+
 Please refer to README.md in each component's directory for detailed introductions.
 
 License

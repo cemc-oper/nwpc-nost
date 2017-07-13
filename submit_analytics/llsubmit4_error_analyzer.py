@@ -319,8 +319,8 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="""
-        DESCRIPTION
-            Analytic llsubmit4 error log.""")
+DESCRIPTION
+    Analytic llsubmit4 error log.""")
 
     sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
 
