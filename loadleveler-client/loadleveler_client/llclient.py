@@ -107,14 +107,15 @@ def cli():
 
 @cli.command()
 @click.option('-c', '--config-file', help="config file path")
-def query(config_file):
+@click.option('-p', '--params', help="llq params")
+def query(config_file, params):
     if config_file:
         config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
 
-    model_dict = get_llq_detail_query_response(config, args.params)
+    model_dict = get_llq_detail_query_response(config, params)
 
     for an_item in model_dict['items']:
         job_id = get_property_data(an_item, "llq.id")
@@ -133,14 +134,15 @@ def query(config_file):
 
 @cli.command()
 @click.option('-c', '--config-file', help="config file path")
-def detail(config_file):
+@click.option('-p', '--params', help="llq params")
+def detail(config_file, params):
     if config_file:
         config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
 
-    model_dict = get_llq_detail_query_response(config, args.params)
+    model_dict = get_llq_detail_query_response(config, params)
 
     for an_item in model_dict['items']:
         job_id = get_property_data(an_item, "llq.id")
