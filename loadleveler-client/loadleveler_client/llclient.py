@@ -105,7 +105,7 @@ def cli():
     """
 
 
-@cli.command()
+@cli.command('query', short_help='llq short format')
 @click.option('-c', '--config-file', help="config file path")
 @click.option('-p', '--params', default="", help="llq params")
 def query(config_file, params):
@@ -123,16 +123,16 @@ def query(config_file, params):
         job_owner = get_property_data(an_item, "llq.owner")
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
-        print("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
-            job_id=job_id,
-            job_class=job_class,
-            job_owner=job_owner,
+        click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+            job_id=click.style(job_id, bold=True),
+            job_class=click.style(job_class, fg='blue'),
+            job_owner=click.style(job_owner, fg='cyan'),
             job_script=job_script,
-            job_status=job_status
+            job_status=click.style(job_status, fg='yellow'),
         ))
 
 
-@cli.command()
+@cli.command('detail', short_help='llq detail format')
 @click.option('-c', '--config-file', help="config file path")
 @click.option('-p', '--params', default="", help="llq params")
 def detail(config_file, params):
@@ -152,22 +152,22 @@ def detail(config_file, params):
         job_status = get_property_data(an_item, "llq.status")
         job_err = get_property_data(an_item, "llq.err")
         job_out = get_property_data(an_item, "llq.out")
-        print("""{job_id} {job_status} {job_class} {job_owner}
+        click.echo("""{job_id} {job_status} {job_class} {job_owner}
   Script: {job_script}
      Out: {job_out}
      Err: {job_err}
 """.format(
-            job_id=job_id,
-            job_class=job_class,
-            job_owner=job_owner,
+            job_id=click.style(job_id, bold=True),
+            job_class=click.style(job_class, fg='blue'),
+            job_owner=click.style(job_owner, fg='cyan'),
             job_script=job_script,
-            job_status=job_status,
+            job_status=click.style(job_status, fg='yellow'),
             job_err=job_err,
             job_out=job_out
         ))
 
 
-def llqn(config, user_name):
+def query_user_llq(config, user_name):
     model_dict = get_llq_detail_query_response(config)
 
     for an_item in model_dict['items']:
@@ -178,16 +178,16 @@ def llqn(config, user_name):
             continue
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
-        print("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
-            job_id=job_id,
-            job_class=job_class,
-            job_owner=job_owner,
+        click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+            job_id=click.style(job_id, bold=True),
+            job_class=click.style(job_class, fg='blue'),
+            job_owner=click.style(job_owner, fg='cyan'),
             job_script=job_script,
-            job_status=job_status
+            job_status=click.style(job_status, fg='yellow'),
         ))
 
 
-@cli.command()
+@cli.command('llqn', short_help='query own jobs')
 @click.option('-c', '--config-file', help="config file path")
 def llqn(config_file):
     if config_file:
@@ -197,10 +197,10 @@ def llqn(config_file):
     config = get_config(config_file_path)
     user_name = get_user_name()
 
-    llqn(config, user_name)
+    query_user_llq(config, user_name)
 
 
-@cli.command()
+@cli.command('llqu', short_help='query user jobs')
 @click.option('-c', '--config-file', help="config file path")
 @click.argument('user_name')
 def llqu(config_file, user_name):
@@ -210,7 +210,7 @@ def llqu(config_file, user_name):
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
 
-    llqn(config, user_name)
+    query_user_llq(config, user_name)
 
 
 if __name__ == "__main__":
