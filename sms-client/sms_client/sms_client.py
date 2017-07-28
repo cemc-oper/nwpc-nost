@@ -62,17 +62,21 @@ def main():
     parser_delete = subparsers.add_parser(
         'delete',
         parents=[login_parser],
-        description="Delete node(s) given. Same to cancel(cdp) in sms."
-                    "By default, user -y option in cdp commands.")
-    parser_delete.add_argument('node', help='The name of the node to be deleted')
+        description="""
+DESCRIPTION
+    Delete node(s) given. Same to cancel(cdp) in sms. By default, user -y option in cdp commands.
+""")
+    parser_delete.add_argument('node', help='The name of the node to be deleted.')
     parser_delete.set_defaults(func=delete_handler)
 
     # load
     parser_load = subparsers.add_parser(
         "load",
         parents=[login_parser],
-        description="Define, validate and send the suites to the SMS. "
-                    "Same to play(cdp) in sms.")
+        description="""
+DESCRIPTION
+    Define, validate and send the suites to the SMS. Same to play(cdp) in sms.
+""")
     parser_load.add_argument('def_file', help='The name of the file that contain the definitions.')
     parser_load.set_defaults(func=load_handler)
 
@@ -80,15 +84,18 @@ def main():
     parser_replace = subparsers.add_parser(
         "replace",
         parents=[login_parser],
-        description="Replace the node given in the SMS")
+        description="""
+DESCRIPTION
+    Replace the node given in the SMS.
+""")
     parser_replace.add_argument(
         'node',
         help='path to node. must exist in the client definition. '
-             'This is also the node we want to replace in the server')
+             'This is also the node we want to replace in the server.')
     parser_replace.add_argument(
         'def_file',
         help='path to client definition file. '
-             'provides the definition of the new node')
+             'provides the definition of the new node.')
     parser_replace.set_defaults(func=replace_handler)
 
     args = parser.parse_args()

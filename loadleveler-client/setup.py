@@ -46,7 +46,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'llclient=loadleveler_client.llclient:loadleveler_client_tool'
+            'llclient=loadleveler_client.llclient:cli'
         ]
     }
 )

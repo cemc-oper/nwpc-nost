@@ -1,8 +1,8 @@
 # coding=utf-8
-import argparse
 import json
 import os
 import subprocess
+import click
 
 from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel
 from nwpc_hpc_model.loadleveler import record_parser
@@ -98,9 +98,18 @@ def get_config(config_file_path):
     return config
 
 
-def query_handler(args):
-    if args.config:
-        config_file_path = args.config
+@click.group()
+def cli():
+    """
+    A command line tool for Loadleveler.
+    """
+
+
+@cli.command()
+@click.option('-c', '--config-file', help="config file path")
+def query(config_file):
+    if config_file:
+        config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
@@ -122,9 +131,11 @@ def query_handler(args):
         ))
 
 
-def detail_handler(args):
-    if args.config:
-        config_file_path = args.config
+@cli.command()
+@click.option('-c', '--config-file', help="config file path")
+def detail(config_file):
+    if config_file:
+        config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
@@ -174,9 +185,11 @@ def llqn(config, user_name):
         ))
 
 
-def llqn_handler(args):
-    if args.config:
-        config_file_path = args.config
+@cli.command()
+@click.option('-c', '--config-file', help="config file path")
+def llqn(config_file):
+    if config_file:
+        config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
@@ -185,87 +198,18 @@ def llqn_handler(args):
     llqn(config, user_name)
 
 
-def llqu_handler(args):
-    if args.config:
-        config_file_path = args.config
+@cli.command()
+@click.option('-c', '--config-file', help="config file path")
+@click.argument('user_name')
+def llqu(config_file, user_name):
+    if config_file:
+        config_file_path = config_file
     else:
         config_file_path = default_config_file_path
     config = get_config(config_file_path)
-    user_name = args.user_name
 
     llqn(config, user_name)
 
 
-def loadleveler_client_tool():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="""
-DESCRIPTION
-    LoadLeveler client tool.""")
-
-    sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
-
-    query_parser = sub_parsers.add_parser('query', description="llq query.")
-    query_parser.add_argument(
-        "-c", "--config",
-        help="config file, default config file is ./conf/{config_file_name}".format(
-            config_file_name=config_file_name
-        )
-    )
-    query_parser.add_argument(
-        "-p", "--params",
-        help="llq params",
-        type=str,
-        default="",
-    )
-    query_parser.set_defaults(func=query_handler)
-
-    detail_parser = sub_parsers.add_parser('detail', description="llq detail query.")
-    detail_parser.add_argument(
-        "-c", "--config",
-        help="config file, default config file is ./conf/{config_file_name}".format(
-            config_file_name=config_file_name
-        )
-    )
-    detail_parser.add_argument(
-        "-p", "--params",
-        help="llq params",
-        type=str,
-        default="",
-    )
-    detail_parser.set_defaults(func=detail_handler)
-
-    llqn_parser = sub_parsers.add_parser('llqn', description="llqn query.")
-    llqn_parser.add_argument(
-        "-c", "--config",
-        help="config file, default config file is ./conf/{config_file_name}".format(
-            config_file_name=config_file_name
-        )
-    )
-    llqn_parser.set_defaults(func=llqn_handler)
-
-    llqu_parser = sub_parsers.add_parser('llqu', description="llqn query.")
-    llqu_parser.add_argument(
-        "-c", "--config",
-        help="config file, default config file is ./conf/{config_file_name}".format(
-            config_file_name=config_file_name
-        )
-    )
-    llqu_parser.add_argument(
-        'user_name',
-        metavar='user_name',
-        type=str,
-        help='user name'
-    )
-
-    llqu_parser.set_defaults(func=llqu_handler)
-
-    args = parser.parse_args()
-    if 'func' in args:
-        args.func(args)
-    else:
-        parser.print_help()
-
-
 if __name__ == "__main__":
-    loadleveler_client_tool()
+    cli()
