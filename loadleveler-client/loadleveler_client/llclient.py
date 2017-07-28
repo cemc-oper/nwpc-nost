@@ -1,7 +1,7 @@
 # coding=utf-8
-import json
 import os
 import subprocess
+import yaml
 import click
 
 from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel
@@ -10,8 +10,20 @@ from nwpc_hpc_model.loadleveler import value_saver
 from nwpc_hpc_model.loadleveler.filter_condition import get_property_data
 
 
-config_file_name = "loadleveler_status.config"
+config_file_name = "llclient.config.yaml"
 default_config_file_path = os.path.join(os.path.dirname(__file__), "conf", config_file_name)
+
+
+def get_config(config_file_path):
+    """
+    :param config_file_path: path of config file, which should be a YAML file.
+
+    :return: config dict loading from config file.
+    """
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+    return config
 
 
 def get_user_name() -> str:
@@ -86,18 +98,6 @@ def get_llq_detail_query_response(config, params=""):
     return model_dict
 
 
-def get_config(config_file_path):
-    """
-    :param config_file_path: path of config file, which should be a YAML file.
-
-    :return: config dict loading from config file.
-    """
-    config = None
-    with open(config_file_path, 'r') as f:
-        config = json.load(f)
-    return config
-
-
 @click.group()
 def cli():
     """
@@ -107,7 +107,7 @@ def cli():
 
 @cli.command()
 @click.option('-c', '--config-file', help="config file path")
-@click.option('-p', '--params', help="llq params")
+@click.option('-p', '--params', default="", help="llq params")
 def query(config_file, params):
     if config_file:
         config_file_path = config_file
@@ -134,7 +134,7 @@ def query(config_file, params):
 
 @cli.command()
 @click.option('-c', '--config-file', help="config file path")
-@click.option('-p', '--params', help="llq params")
+@click.option('-p', '--params', default="", help="llq params")
 def detail(config_file, params):
     if config_file:
         config_file_path = config_file
