@@ -38,7 +38,10 @@ setup(
         'loadleveler_client': ['conf/*.config']
     },
 
-    install_requires=[],
+    install_requires=[
+        'pyyaml',
+        'click'
+    ],
 
     # extras_require={
     #     'test': ['pytest'],

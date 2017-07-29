@@ -21,6 +21,8 @@ def get_config(config_file_path):
     :return: config dict loading from config file.
     """
     config = None
+    if not config_file_path:
+        config_file_path = default_config_file_path
     with open(config_file_path, 'r') as f:
         config = yaml.load(f)
     return config
@@ -109,11 +111,7 @@ def cli():
 @click.option('-c', '--config-file', help="config file path")
 @click.option('-p', '--params', default="", help="llq params")
 def query(config_file, params):
-    if config_file:
-        config_file_path = config_file
-    else:
-        config_file_path = default_config_file_path
-    config = get_config(config_file_path)
+    config = get_config(config_file)
 
     model_dict = get_llq_detail_query_response(config, params)
 
@@ -136,11 +134,7 @@ def query(config_file, params):
 @click.option('-c', '--config-file', help="config file path")
 @click.option('-p', '--params', default="", help="llq params")
 def detail(config_file, params):
-    if config_file:
-        config_file_path = config_file
-    else:
-        config_file_path = default_config_file_path
-    config = get_config(config_file_path)
+    config = get_config(config_file)
 
     model_dict = get_llq_detail_query_response(config, params)
 
@@ -167,7 +161,7 @@ def detail(config_file, params):
         ))
 
 
-def query_user_llq(config, user_name):
+def query_user_llq(config, user_name, long=False):
     model_dict = get_llq_detail_query_response(config)
 
     for an_item in model_dict['items']:
@@ -178,39 +172,50 @@ def query_user_llq(config, user_name):
             continue
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
-        click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
-            job_id=click.style(job_id, bold=True),
-            job_class=click.style(job_class, fg='blue'),
-            job_owner=click.style(job_owner, fg='cyan'),
-            job_script=job_script,
-            job_status=click.style(job_status, fg='yellow'),
-        ))
+        if long:
+            job_err = get_property_data(an_item, "llq.err")
+            job_out = get_property_data(an_item, "llq.out")
+            click.echo("""{job_id} {job_status} {job_class} {job_owner}
+              Script: {job_script}
+                 Out: {job_out}
+                 Err: {job_err}
+            """.format(
+                job_id=click.style(job_id, bold=True),
+                job_class=click.style(job_class, fg='blue'),
+                job_owner=click.style(job_owner, fg='cyan'),
+                job_script=job_script,
+                job_status=click.style(job_status, fg='yellow'),
+                job_err=job_err,
+                job_out=job_out
+            ))
+        else:
+            click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+                job_id=click.style(job_id, bold=True),
+                job_class=click.style(job_class, fg='blue'),
+                job_owner=click.style(job_owner, fg='cyan'),
+                job_script=job_script,
+                job_status=click.style(job_status, fg='yellow'),
+            ))
 
 
 @cli.command('llqn', short_help='query own jobs')
 @click.option('-c', '--config-file', help="config file path")
-def llqn(config_file):
-    if config_file:
-        config_file_path = config_file
-    else:
-        config_file_path = default_config_file_path
-    config = get_config(config_file_path)
+@click.option('-l', '--long', is_flag=True, default=False, help="use long description")
+def llqn(config_file, long):
+    config = get_config(config_file)
     user_name = get_user_name()
 
-    query_user_llq(config, user_name)
+    query_user_llq(config, user_name, long)
 
 
 @cli.command('llqu', short_help='query user jobs')
 @click.option('-c', '--config-file', help="config file path")
+@click.option('-l', '--long', is_flag=True, default=False, help="use long description")
 @click.argument('user_name')
-def llqu(config_file, user_name):
-    if config_file:
-        config_file_path = config_file
-    else:
-        config_file_path = default_config_file_path
-    config = get_config(config_file_path)
+def llqu(config_file, user_name, long):
+    config = get_config(config_file)
 
-    query_user_llq(config, user_name)
+    query_user_llq(config, user_name, long)
 
 
 if __name__ == "__main__":
