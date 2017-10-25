@@ -127,6 +127,16 @@ def query(config_file, user_list, class_list, params):
 
     model_dict = get_llq_detail_query_response(config, params)
 
+    max_class_length = 0
+    max_owner_length = 0
+    for an_item in model_dict['items']:
+        job_class = get_property_data(an_item, "llq.class")
+        if len(job_class) > max_class_length:
+            max_class_length = len(job_class)
+        job_owner = get_property_data(an_item, "llq.owner")
+        if len(job_owner) > max_owner_length:
+            max_owner_length = len(job_owner)
+
     for an_item in model_dict['items']:
         job_id = get_property_data(an_item, "llq.id")
         job_class = get_property_data(an_item, "llq.class")
@@ -135,10 +145,10 @@ def query(config_file, user_list, class_list, params):
         job_status = get_property_data(an_item, "llq.status")
         click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
             job_id=click.style(job_id, bold=True),
-            job_class=click.style(job_class, fg='blue'),
-            job_owner=click.style(job_owner, fg='cyan'),
+            job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
+            job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
             job_script=job_script,
-            job_status=click.style(job_status, fg='yellow'),
+            job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
         ))
 
 
@@ -188,6 +198,18 @@ def detail(config_file, user_list, class_list, params):
 def query_user_llq(config, user_name, long=False):
     model_dict = get_llq_detail_query_response(config)
 
+    max_class_length = 0
+    max_owner_length = 0
+    for an_item in model_dict['items']:
+        job_owner = get_property_data(an_item, "llq.owner")
+        if user_name not in job_owner:
+            continue
+        job_class = get_property_data(an_item, "llq.class")
+        if len(job_class) > max_class_length:
+            max_class_length = len(job_class)
+        if len(job_owner) > max_owner_length:
+            max_owner_length = len(job_owner)
+
     for an_item in model_dict['items']:
         job_id = get_property_data(an_item, "llq.id")
         job_class = get_property_data(an_item, "llq.class")
@@ -215,10 +237,10 @@ def query_user_llq(config, user_name, long=False):
         else:
             click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
                 job_id=click.style(job_id, bold=True),
-                job_class=click.style(job_class, fg='blue'),
-                job_owner=click.style(job_owner, fg='cyan'),
+                job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
+                job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
                 job_script=job_script,
-                job_status=click.style(job_status, fg='yellow'),
+                job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
             ))
 
 
