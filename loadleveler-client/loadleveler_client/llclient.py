@@ -270,5 +270,87 @@ def llqu(config_file, user_name, long):
     query_user_llq(config, user_name, long)
 
 
+@cli.command('vijob', short_help='edit job script')
+@click.option('--config-file', help="config file path")
+@click.option('-f', '--file-type', type=click.Choice(['job', 'out', 'err']), help="file type")
+@click.argument('job_id')
+def vijob(config_file, file_type, job_id):
+    """
+    Edit job script.
+    """
+    config = get_config(config_file)
+
+    params = job_id
+    model_dict = get_llq_detail_query_response(config, params)
+
+    job_count = len(model_dict['items'])
+
+    if job_count == 0:
+        click.echo('There is no job.')
+    elif job_count > 1:
+        click.echo('There are more than one job.')
+    else:
+        an_item = model_dict['items'][0]
+        key = "llq.job_script"
+        if file_type == 'out':
+            key = 'llq.out'
+        elif file_type == 'err':
+            key = 'llq.err'
+        file_path = get_property_data(an_item, key)
+        click.edit(filename=file_path)
+
+
+@cli.command('viout', short_help='edit output file')
+@click.option('--config-file', help="config file path")
+@click.argument('job_id')
+def viout(config_file, job_id):
+    """
+    Edit output file.
+    """
+    config = get_config(config_file)
+
+    params = job_id
+    model_dict = get_llq_detail_query_response(config, params)
+
+    job_count = len(model_dict['items'])
+
+    if job_count == 0:
+        click.echo('There is no job.')
+    elif job_count > 1:
+        click.echo('There are more than one job.')
+    else:
+        an_item = model_dict['items'][0]
+        # job_script = get_property_data(an_item, "llq.job_script")
+        # job_err = get_property_data(an_item, "llq.err")
+        job_out = get_property_data(an_item, "llq.out")
+        click.edit(filename=job_out)
+
+
+@cli.command('vierr', short_help='edit error output file')
+@click.option('--config-file', help="config file path")
+@click.argument('job_id')
+def vierr(config_file, job_id):
+    """
+    Edit error output file.
+    """
+    config = get_config(config_file)
+
+    params = job_id
+    model_dict = get_llq_detail_query_response(config, params)
+
+    job_count = len(model_dict['items'])
+
+    if job_count == 0:
+        click.echo('There is no job.')
+    elif job_count > 1:
+        click.echo('There are more than one job.')
+    else:
+        an_item = model_dict['items'][0]
+        # job_script = get_property_data(an_item, "llq.job_script")
+        job_err = get_property_data(an_item, "llq.err")
+        # job_out = get_property_data(an_item, "llq.out")
+        click.edit(filename=job_err)
+
+
 if __name__ == "__main__":
     cli()
