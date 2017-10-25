@@ -108,10 +108,22 @@ def cli():
 
 
 @cli.command('query', short_help='llq short format')
-@click.option('-c', '--config-file', help="config file path")
+@click.option('--config-file', help="config file path")
+@click.option('-u', '--user-list', multiple=True, help="user list")
+@click.option('-c', '--class-list', multiple=True, help="class list")
 @click.option('-p', '--params', default="", help="llq params")
-def query(config_file, params):
+def query(config_file, user_list, class_list, params):
+    """
+    Query jobs in LoadLeveler and show in a simple format.
+    """
     config = get_config(config_file)
+
+    if params is None:
+        params = ''
+    if user_list:
+        params += ' -u {user_list}'.format(user_list=" ".join(user_list))
+    if class_list:
+        params += ' -c {class_list}'.format(class_list=" ".join(class_list))
 
     model_dict = get_llq_detail_query_response(config, params)
 
@@ -131,10 +143,22 @@ def query(config_file, params):
 
 
 @cli.command('detail', short_help='llq detail format')
-@click.option('-c', '--config-file', help="config file path")
+@click.option('--config-file', help="config file path")
+@click.option('-u', '--user-list', multiple=True, help="user list")
+@click.option('-c', '--class-list', multiple=True, help="class list")
 @click.option('-p', '--params', default="", help="llq params")
-def detail(config_file, params):
+def detail(config_file, user_list, class_list, params):
+    """
+    Query jobs in LoadLeveler and show in a detailed format.
+    """
     config = get_config(config_file)
+
+    if params is None:
+        params = ''
+    if user_list:
+        params += ' -u {user_list}'.format(user_list=" ".join(user_list))
+    if class_list:
+        params += ' -c {class_list}'.format(class_list=" ".join(class_list))
 
     model_dict = get_llq_detail_query_response(config, params)
 
@@ -199,9 +223,12 @@ def query_user_llq(config, user_name, long=False):
 
 
 @cli.command('llqn', short_help='query own jobs')
-@click.option('-c', '--config-file', help="config file path")
+@click.option('--config-file', help="config file path")
 @click.option('-l', '--long', is_flag=True, default=False, help="use long description")
 def llqn(config_file, long):
+    """
+    Query login user's jobs in LoadLeveler.
+    """
     config = get_config(config_file)
     user_name = get_user_name()
 
@@ -209,10 +236,13 @@ def llqn(config_file, long):
 
 
 @cli.command('llqu', short_help='query user jobs')
-@click.option('-c', '--config-file', help="config file path")
+@click.option('--config-file', help="config file path")
 @click.option('-l', '--long', is_flag=True, default=False, help="use long description")
 @click.argument('user_name')
 def llqu(config_file, user_name, long):
+    """
+    Query some user's jobs in LoadLeveler.
+    """
     config = get_config(config_file)
 
     query_user_llq(config, user_name, long)
