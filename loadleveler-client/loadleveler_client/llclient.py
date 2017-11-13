@@ -143,10 +143,12 @@ def query(config_file, user_list, class_list, params):
         job_owner = get_property_data(an_item, "llq.owner")
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
-        click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+        job_queue_data = get_property_data(an_item, "llq.queue_date")
+        click.echo("{job_id} {job_status} {job_class} {job_owner} {job_queue_data} {job_script}".format(
             job_id=click.style(job_id, bold=True),
             job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
             job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
+            job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
             job_script=job_script,
             job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
         ))
@@ -178,9 +180,10 @@ def detail(config_file, user_list, class_list, params):
         job_owner = get_property_data(an_item, "llq.owner")
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
+        job_queue_data = get_property_data(an_item, "llq.queue_date")
         job_err = get_property_data(an_item, "llq.err")
         job_out = get_property_data(an_item, "llq.out")
-        click.echo("""{job_id} {job_status} {job_class} {job_owner}
+        click.echo("""{job_id} {job_status} {job_class} {job_owner} {job_queue_data}
   Script: {job_script}
      Out: {job_out}
      Err: {job_err}
@@ -188,6 +191,7 @@ def detail(config_file, user_list, class_list, params):
             job_id=click.style(job_id, bold=True),
             job_class=click.style(job_class, fg='blue'),
             job_owner=click.style(job_owner, fg='cyan'),
+            job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
             job_script=job_script,
             job_status=click.style(job_status, fg='yellow'),
             job_err=job_err,
@@ -218,10 +222,11 @@ def query_user_llq(config, user_name, long=False):
             continue
         job_script = get_property_data(an_item, "llq.job_script")
         job_status = get_property_data(an_item, "llq.status")
+        job_queue_data = get_property_data(an_item, "llq.queue_date")
         if long:
             job_err = get_property_data(an_item, "llq.err")
             job_out = get_property_data(an_item, "llq.out")
-            click.echo("""{job_id} {job_status} {job_class} {job_owner}
+            click.echo("""{job_id} {job_status} {job_class} {job_owner} {job_queue_data}
               Script: {job_script}
                  Out: {job_out}
                  Err: {job_err}
@@ -229,16 +234,18 @@ def query_user_llq(config, user_name, long=False):
                 job_id=click.style(job_id, bold=True),
                 job_class=click.style(job_class, fg='blue'),
                 job_owner=click.style(job_owner, fg='cyan'),
+                job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
                 job_script=job_script,
                 job_status=click.style(job_status, fg='yellow'),
                 job_err=job_err,
                 job_out=job_out
             ))
         else:
-            click.echo("{job_id} {job_status} {job_class} {job_owner} {job_script}".format(
+            click.echo("{job_id} {job_status} {job_class} {job_owner} {job_queue_data} {job_script}".format(
                 job_id=click.style(job_id, bold=True),
                 job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
                 job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
+                job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
                 job_script=job_script,
                 job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
             ))
