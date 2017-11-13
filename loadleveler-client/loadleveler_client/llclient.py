@@ -148,7 +148,7 @@ def query(config_file, user_list, class_list, params):
             job_id=click.style(job_id, bold=True),
             job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
             job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
-            job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
+            job_queue_data=click.style(job_queue_data.strftime("%m/%d %H:%M"), fg='blue'),
             job_script=job_script,
             job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
         ))
@@ -191,7 +191,7 @@ def detail(config_file, user_list, class_list, params):
             job_id=click.style(job_id, bold=True),
             job_class=click.style(job_class, fg='blue'),
             job_owner=click.style(job_owner, fg='cyan'),
-            job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
+            job_queue_data=click.style(job_queue_data.strftime("%m/%d %H:%M"), fg='blue'),
             job_script=job_script,
             job_status=click.style(job_status, fg='yellow'),
             job_err=job_err,
@@ -245,7 +245,7 @@ def query_user_llq(config, user_name, long=False):
                 job_id=click.style(job_id, bold=True),
                 job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class), fg='blue'),
                 job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner), fg='cyan'),
-                job_queue_data=job_queue_data.strftime("%m/%d %H:%M"),
+                job_queue_data=click.style(job_queue_data.strftime("%m/%d %H:%M"), fg='blue'),
                 job_script=job_script,
                 job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
             ))
