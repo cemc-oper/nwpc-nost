@@ -53,6 +53,29 @@ def build_category_list(category_list_config):
     return category_list
 
 
+def get_status_sort_index(status):
+    if status == 'R':
+        return 0
+    elif status == 'C':
+        return 10
+    elif status == 'I':
+        return 100
+    elif status == 'RP':
+        return 200
+    elif status == 'H':
+        return 300
+    else:
+        return 500
+
+
+def sort_query_response_items(items, sort_key=None):
+    if sort_key is None:
+        items.sort(key=lambda item: (get_status_sort_index(get_property_data(item, "llq.status")),
+                                     get_property_data(item, "llq.queue_date")))
+    else:
+        return items
+
+
 def run_llq_detail_command(command="/usr/bin/llq -l", params="-u nwp") -> str:
     """
     run llq detail command, default is llq -l.
@@ -137,7 +160,10 @@ def query(config_file, user_list, class_list, params):
         if len(job_owner) > max_owner_length:
             max_owner_length = len(job_owner)
 
-    for an_item in model_dict['items']:
+    items = model_dict['items']
+    sort_query_response_items(items)
+
+    for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
         job_class = get_property_data(an_item, "llq.class")
         job_owner = get_property_data(an_item, "llq.owner")
@@ -173,8 +199,10 @@ def detail(config_file, user_list, class_list, params):
         params += ' -c {class_list}'.format(class_list=" ".join(class_list))
 
     model_dict = get_llq_detail_query_response(config, params)
+    items = model_dict['items']
+    sort_query_response_items(items)
 
-    for an_item in model_dict['items']:
+    for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
         job_class = get_property_data(an_item, "llq.class")
         job_owner = get_property_data(an_item, "llq.owner")
@@ -214,7 +242,10 @@ def query_user_llq(config, user_name, long=False):
         if len(job_owner) > max_owner_length:
             max_owner_length = len(job_owner)
 
-    for an_item in model_dict['items']:
+    items = model_dict['items']
+    sort_query_response_items(items)
+
+    for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
         job_class = get_property_data(an_item, "llq.class")
         job_owner = get_property_data(an_item, "llq.owner")
