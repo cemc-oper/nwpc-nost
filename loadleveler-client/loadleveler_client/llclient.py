@@ -53,6 +53,7 @@ def build_category_list(category_list_config):
     return category_list
 
 
+# TODO: move to nwpc hpc model, and do it in a more proper way.
 def get_sort_data(job_item, property_id):
     data = get_property_data(job_item, property_id)
     if property_id == 'llq.status':
@@ -412,6 +413,34 @@ def vierr(config_file, job_id):
         job_err = get_property_data(an_item, "llq.err")
         # job_out = get_property_data(an_item, "llq.out")
         click.edit(filename=job_err)
+
+
+@cli.command('category', short_help="show category list defined in config file.")
+@click.option('-d', '--detail', is_flag=True, default=False, help="show detail information")
+@click.option('--config-file', help="config file path")
+def show_category(detail, config_file):
+
+    """
+    show category list defined in config file.
+    """
+    config = get_config(config_file)
+    category_list = config['category_list']
+    for a_category in category_list:
+        click.echo(click.style(a_category['id'], bold=True))
+        if detail:
+            click.echo("  display name: {display_name}".format(display_name=a_category['display_name']))
+            click.echo("  label: {label}".format(label=a_category['label']))
+            click.echo("  record parser: {record_parser_class}".format(
+                record_parser_class=a_category['record_parser_class']))
+            click.echo("  record parser arguments:")
+            for an_arg in a_category['record_parser_arguments']:
+                click.echo("    {arg}".format(arg=an_arg))
+            click.echo("  value saver: {value_saver_class}".format(
+                value_saver_class=a_category['value_saver_class']))
+            click.echo("  value saver arguments:")
+            for an_arg in a_category['value_saver_arguments']:
+                click.echo("    {arg}".format(arg=an_arg))
+            click.echo()
 
 
 if __name__ == "__main__":
