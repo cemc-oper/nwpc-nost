@@ -53,27 +53,39 @@ def build_category_list(category_list_config):
     return category_list
 
 
-def get_status_sort_index(status):
-    if status == 'R':
-        return 0
-    elif status == 'C':
-        return 10
-    elif status == 'I':
-        return 100
-    elif status == 'RP':
-        return 200
-    elif status == 'H':
-        return 300
+def get_sort_data(job_item, property_id):
+    data = get_property_data(job_item, property_id)
+    if property_id == 'llq.status':
+        status = data
+        if status == 'R':
+            return 0
+        elif status == 'C':
+            return 10
+        elif status == 'I':
+            return 100
+        elif status == 'RP':
+            return 200
+        elif status == 'H':
+            return 300
+        else:
+            return 500
     else:
-        return 500
+        return data
 
 
-def sort_query_response_items(items, sort_key=None):
-    if sort_key is None:
-        items.sort(key=lambda item: (get_status_sort_index(get_property_data(item, "llq.status")),
-                                     get_property_data(item, "llq.queue_date")))
-    else:
-        return items
+def generate_sort_key_function(sort_keys):
+    def sort_key_function(item):
+        key_list = []
+        for sort_key in sort_keys:
+            key_list.append(get_sort_data(item, "llq."+sort_key))
+        return tuple(key_list)
+    return sort_key_function
+
+
+def sort_query_response_items(items, sort_keys=None):
+    if sort_keys is None:
+        sort_keys = ('status', 'queue_date')
+    items.sort(key=generate_sort_key_function(sort_keys))
 
 
 def run_llq_detail_command(command="/usr/bin/llq -l", params="-u nwp") -> str:
@@ -134,8 +146,9 @@ def cli():
 @click.option('--config-file', help="config file path")
 @click.option('-u', '--user-list', multiple=True, help="user list")
 @click.option('-c', '--class-list', multiple=True, help="class list")
+@click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
 @click.option('-p', '--params', default="", help="llq params")
-def query(config_file, user_list, class_list, params):
+def query(config_file, user_list, class_list, sort_keys, params):
     """
     Query jobs in LoadLeveler and show in a simple format.
     """
@@ -147,6 +160,8 @@ def query(config_file, user_list, class_list, params):
         params += ' -u {user_list}'.format(user_list=" ".join(user_list))
     if class_list:
         params += ' -c {class_list}'.format(class_list=" ".join(class_list))
+    if sort_keys:
+        sort_keys = tuple(sort_keys.split(":"))
 
     model_dict = get_llq_detail_query_response(config, params)
 
@@ -161,7 +176,7 @@ def query(config_file, user_list, class_list, params):
             max_owner_length = len(job_owner)
 
     items = model_dict['items']
-    sort_query_response_items(items)
+    sort_query_response_items(items, sort_keys)
 
     for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
@@ -184,8 +199,9 @@ def query(config_file, user_list, class_list, params):
 @click.option('--config-file', help="config file path")
 @click.option('-u', '--user-list', multiple=True, help="user list")
 @click.option('-c', '--class-list', multiple=True, help="class list")
+@click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
 @click.option('-p', '--params', default="", help="llq params")
-def detail(config_file, user_list, class_list, params):
+def detail(config_file, user_list, class_list, sort_keys, params):
     """
     Query jobs in LoadLeveler and show in a detailed format.
     """
@@ -197,10 +213,12 @@ def detail(config_file, user_list, class_list, params):
         params += ' -u {user_list}'.format(user_list=" ".join(user_list))
     if class_list:
         params += ' -c {class_list}'.format(class_list=" ".join(class_list))
+    if sort_keys:
+        sort_keys = tuple(sort_keys.split(":"))
 
     model_dict = get_llq_detail_query_response(config, params)
     items = model_dict['items']
-    sort_query_response_items(items)
+    sort_query_response_items(items, sort_keys)
 
     for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
@@ -227,7 +245,7 @@ def detail(config_file, user_list, class_list, params):
         ))
 
 
-def query_user_llq(config, user_name, long=False):
+def query_user_llq(config, user_name, sort_keys, long=False):
     model_dict = get_llq_detail_query_response(config)
 
     max_class_length = 0
@@ -243,7 +261,7 @@ def query_user_llq(config, user_name, long=False):
             max_owner_length = len(job_owner)
 
     items = model_dict['items']
-    sort_query_response_items(items)
+    sort_query_response_items(items, sort_keys)
 
     for an_item in items:
         job_id = get_property_data(an_item, "llq.id")
@@ -285,27 +303,33 @@ def query_user_llq(config, user_name, long=False):
 @cli.command('llqn', short_help='query own jobs')
 @click.option('--config-file', help="config file path")
 @click.option('-l', '--long', is_flag=True, default=False, help="use long description")
-def llqn(config_file, long):
+@click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
+def llqn(config_file, long, sort_keys):
     """
     Query login user's jobs in LoadLeveler.
     """
     config = get_config(config_file)
     user_name = get_user_name()
+    if sort_keys:
+        sort_keys = tuple(sort_keys.split(":"))
 
-    query_user_llq(config, user_name, long)
+    query_user_llq(config, user_name, sort_keys, long)
 
 
 @cli.command('llqu', short_help='query user jobs')
 @click.option('--config-file', help="config file path")
 @click.option('-l', '--long', is_flag=True, default=False, help="use long description")
+@click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
 @click.argument('user_name')
-def llqu(config_file, user_name, long):
+def llqu(config_file, user_name, long, sort_keys):
     """
     Query some user's jobs in LoadLeveler.
     """
     config = get_config(config_file)
+    if sort_keys:
+        sort_keys = tuple(sort_keys.split(":"))
 
-    query_user_llq(config, user_name, long)
+    query_user_llq(config, user_name, sort_keys, long)
 
 
 @cli.command('vijob', short_help='edit job script')
