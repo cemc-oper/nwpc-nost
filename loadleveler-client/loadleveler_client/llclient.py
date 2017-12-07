@@ -301,7 +301,7 @@ def query_user_llq(config, user_name, sort_keys, long=False):
             ))
 
 
-@cli.command('llqn', short_help='query own jobs')
+@cli.command('llqn', short_help='query owner jobs')
 @click.option('--config-file', help="config file path")
 @click.option('-l', '--long', is_flag=True, default=False, help="use long description")
 @click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
