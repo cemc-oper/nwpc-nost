@@ -2,9 +2,10 @@
 import subprocess
 import re
 import datetime
-import argparse
 import json
 from collections import defaultdict
+
+import click
 
 
 def get_system_from_path(path):
@@ -72,8 +73,21 @@ def get_record_field_value(record, name):
         raise Exception('name unsupported', name)
 
 
-def info_handler(args):
-    log_file_path = args.log_file_path
+@click.group()
+def cli():
+    """
+DESCRIPTION
+    Analytic llsubmit4 error log."""
+    pass
+
+
+@cli.command('info', help='get log file info')
+@click.option('-f', '--file', 'log_file_path', required=True, help="log file path")
+@click.option("--pretty-print/--no-pretty-print", default=False, help="print pretty result.")
+def info(log_file_path, pretty_print):
+    """
+    get log file info
+    """
 
     command = "head -n 1 {log_file_path}".format(log_file_path=log_file_path)
     output_string, error_string = run_command(command)
@@ -94,7 +108,11 @@ def info_handler(args):
                 }
             }
         }
-        print(json.dumps(result))
+
+        if pretty_print:
+            print(json.dumps(result, indent=4))
+        else:
+            print(json.dumps(result))
         return
 
     record = parse_error_log(output_string)
@@ -119,7 +137,11 @@ def info_handler(args):
                 }
             }
         }
-        print(json.dumps(result))
+
+        if pretty_print:
+            print(json.dumps(result, indent=4))
+        else:
+            print(json.dumps(result))
         return
 
     record = parse_error_log(output_string)
@@ -144,7 +166,12 @@ def info_handler(args):
                 }
             }
         }
-        print(json.dumps(result))
+
+        if pretty_print:
+            print(json.dumps(result, indent=4))
+        else:
+            print(json.dumps(result))
+
         return
 
     line_count = int(output_string.strip().split(' ')[0])
@@ -169,18 +196,26 @@ def info_handler(args):
             }
         }
     }
-    if args.pretty_print:
+    if pretty_print:
         print(json.dumps(result, indent=4))
     else:
         print(json.dumps(result))
 
 
-def count_handler(args):
-    begin_date = args.begin_date
-    end_date = args.end_date
-    log_file_path = args.log_file_path
-    count_type = args.count_type
-
+@cli.command('count', help='count errors in error log file.')
+@click.option("-f", "--file", "log_file_path", required=True, help="log file path")
+@click.option("--begin-date", help="begin date, YYYY-MM-DD")
+@click.option("--end-date", help="end date, YYYY-MM-DD")
+@click.option("--begin-time", help="begin time, hh:mm:ss")
+@click.option("--end-time", help="end time, hh:mm:ss")
+@click.option("--type", "count_type", required=True,
+              type=click.Choice(['month', 'date', 'weekday', 'date-hour', 'hour', 'system']),
+              help="count type", )
+@click.option("--pretty-print/--no-pretty-print", default=False, help="print pretty result.")
+def count(log_file_path, begin_date, end_date, begin_time, end_time, count_type, pretty_print):
+    """
+    count errors in error log file.
+    """
     if begin_date:
         begin_date = datetime.datetime.strptime(begin_date, "%Y-%m-%d")
     if end_date:
@@ -217,7 +252,10 @@ def count_handler(args):
                 }
             }
         }
-        print(json.dumps(result))
+        if pretty_print:
+            print(json.dumps(result, indent=4))
+        else:
+            print(json.dumps(result))
         return
 
     result = {
@@ -241,16 +279,29 @@ def count_handler(args):
         }
     }
 
-    print(json.dumps(result, indent=4))
+    if pretty_print:
+        print(json.dumps(result, indent=4))
+    else:
+        print(json.dumps(result))
 
 
-def grid_handler(args):
-    begin_date = args.begin_date
-    end_date = args.end_date
-    log_file_path = args.log_file_path
-    x_type = args.x_type
-    y_type = args.y_type
-
+@cli.command('grid', help='get grid result.')
+@click.option("-f", "--file", "log_file_path", required=True, help="log file path")
+@click.option("--begin-date", help="begin date, YYYY-MM-DD")
+@click.option("--end-date", help="end date, YYYY-MM-DD")
+@click.option("--begin-time", help="begin time, hh:mm:ss")
+@click.option("--end-time", help="end time, hh:mm:ss")
+@click.option("--x-type", "x_type", required=True,
+              type=click.Choice(['hour', 'weekday']),
+              help="x axis type")
+@click.option("--y-type", "y_type", required=True,
+              type=click.Choice(['weekday', 'system', 'date']),
+              help="y axis type")
+@click.option("--pretty-print/--no-pretty-print", default=False, help="print pretty result.")
+def grid(log_file_path, begin_date, end_date, begin_time, end_time, x_type, y_type, pretty_print):
+    """
+    get grid result.
+    """
     if begin_date:
         begin_date = datetime.datetime.strptime(begin_date, "%Y-%m-%d")
     if end_date:
@@ -291,7 +342,10 @@ def grid_handler(args):
                 }
             }
         }
-        print(json.dumps(result))
+        if pretty_print:
+            print(json.dumps(result, indent=4))
+        else:
+            print(json.dumps(result))
         return
 
     result = {
@@ -312,48 +366,11 @@ def grid_handler(args):
         }
     }
 
-    print(json.dumps(result, indent=4))
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="""
-DESCRIPTION
-    Analytic llsubmit4 error log.""")
-
-    sub_parsers = parser.add_subparsers(title="sub commands", dest="sub_command")
-
-    info_parser = sub_parsers.add_parser('info', description="get log file info.")
-    info_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
-    info_parser.add_argument("--pretty-print", help="print pretty result.", action="store_true")
-    info_parser.set_defaults(func=info_handler)
-
-    count_parser = sub_parsers.add_parser('count', description="count errors in error log file.")
-    count_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
-    count_parser.add_argument("--begin-date", help="begin date, YYYY-MM-DD")
-    count_parser.add_argument("--end-date", help="end date, YYYY-MM-DD")
-    count_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
-    count_parser.add_argument("--end-time", help="end time, hh:mm:ss")
-    count_parser.add_argument("--type", dest="count_type", help="count type", required=True,
-                              choices=['month', 'date', 'weekday', 'date-hour', 'hour', 'system'])
-    count_parser.set_defaults(func=count_handler)
-
-    grid_parser = sub_parsers.add_parser('grid', description="get grid result.")
-    grid_parser.add_argument("-f", "--file", help="log file path", dest="log_file_path", required=True)
-    grid_parser.add_argument("--begin-date", help="begin date, YYYY-MM-DD")
-    grid_parser.add_argument("--end-date", help="end date, YYYY-MM-DD")
-    grid_parser.add_argument("--begin-time", help="begin time, hh:mm:ss")
-    grid_parser.add_argument("--end-time", help="end time, hh:mm:ss")
-    grid_parser.add_argument("--x-type", dest="x_type", help="x axis type", required=True,
-                             choices=['hour', 'weekday'])
-    grid_parser.add_argument("--y-type", dest="y_type", help="y axis type", required=True,
-                             choices=['weekday', 'system', 'date'])
-    grid_parser.set_defaults(func=grid_handler)
-
-    args = parser.parse_args()
-    args.func(args)
+    if pretty_print:
+        print(json.dumps(result, indent=4))
+    else:
+        print(json.dumps(result))
 
 
 if __name__ == "__main__":
-    main()
+    cli()
