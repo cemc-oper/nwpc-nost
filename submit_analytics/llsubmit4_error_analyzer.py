@@ -53,22 +53,24 @@ def parse_error_log(log_string):
 
 
 def get_record_field_value(record, name):
-    if name == 'month':
-        return record['date'].strftime("%Y-%m")
-    elif name == 'date':
-        return record['date'].strftime("%Y-%m-%d")
-    elif name == 'weekday':
-        return record['date'].weekday()
-    elif name == 'system':
-        return get_system_from_path(record['info']['path'])
-    elif name == 'date-hour':
-        cur_datetime = record['date']
+    def get_date_hour(x):
+        cur_datetime = x['date']
         cur_date = cur_datetime.date()
         zero_time = datetime.time(cur_datetime.hour)
         cur_hour = datetime.datetime.combine(cur_date, zero_time)
         return cur_hour.strftime("%Y-%m-%d %H:%M:%S")
-    elif name == 'hour':
-        return record['date'].hour
+
+    field_mapper = {
+        'month': lambda x: x['date'].strftime("%Y-%m"),
+        'date': lambda x: x['date'].strftime("%Y-%m-%d"),
+        'weekday': lambda x: x['date'].weekday(),
+        'system': lambda x: get_system_from_path(x['info']['path']),
+        'date-hour': get_date_hour,
+        'hour': lambda x: x['date'].hour,
+    }
+
+    if name in field_mapper:
+        return field_mapper[name](record)
     else:
         raise Exception('name unsupported', name)
 
