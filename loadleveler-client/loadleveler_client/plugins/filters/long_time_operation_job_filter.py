@@ -13,19 +13,11 @@ filter_info = {
 }
 
 
-
-def get_datetime_data(job_item, property_id):
-    result = get_property_data(job_item, property_id)
-    # if property_id == 'llq.queue_date':
-    #     result = datetime.datetime.strptime(result, "%Y-%m-%d %H:%M:%S")
-    return result
-
-
 def create_filter():
     query_date_condition = PropertyFilterCondition(
         "llq.queue_date",
         data_checker=create_less_value_checker(datetime.datetime.utcnow()-datetime.timedelta(hours=12)),
-        data_parser=get_datetime_data
+        data_parser=get_property_data
     )
     owner_condition = PropertyFilterCondition(
         "llq.owner",
