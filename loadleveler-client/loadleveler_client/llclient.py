@@ -103,6 +103,35 @@ def run_llq_detail_command(command="/usr/bin/llq -l", params="-u nwp") -> str:
     return output_string
 
 
+def get_llq_detail_query_model(config, params=""):
+    """
+    get response of llq detail query.
+
+    :param config: config dict
+        {
+            category_list: a list of categories
+                [
+                    {
+                        id: "llq.id",
+                        display_name: "Id",
+                        label: "Job Step Id",
+                        record_parser_class: "DetailLabelParser",
+                        record_parser_arguments: ["Job Step Id"],
+                        value_saver_class: "StringSaver",
+                        value_saver_arguments: []
+                    }
+                ]
+    :param params:
+    :return: model, see nwpc_hpc_model_loadleveler.query_model.QueryModel
+
+    """
+    output_lines = run_llq_detail_command(params=params).split("\n")
+    category_list = build_category_list(config['category_list'])
+
+    model = QueryModel.build_from_category_list(output_lines, category_list)
+    return model
+
+
 def get_llq_detail_query_response(config, params=""):
     """
     get response of llq detail query.
@@ -128,12 +157,7 @@ def get_llq_detail_query_response(config, params=""):
         }
 
     """
-    output_lines = run_llq_detail_command(params=params).split("\n")
-    category_list = build_category_list(config['category_list'])
-
-    model = QueryModel.build_from_category_list(output_lines, category_list)
-    model_dict = model.to_dict()
-    return model_dict
+    return get_llq_detail_query_model(config, params).to_dict()
 
 
 @click.group()
@@ -202,7 +226,7 @@ def query(config_file, user_list, class_list, sort_keys, params):
 @click.option('-c', '--class-list', multiple=True, help="class list")
 @click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
 @click.option('-p', '--params', default="", help="llq params")
-def detail(config_file, user_list, class_list, sort_keys, params):
+def show_detail(config_file, user_list, class_list, sort_keys, params):
     """
     Query jobs in LoadLeveler and show in a detailed format.
     """
@@ -441,6 +465,80 @@ def show_category(detail, config_file):
             for an_arg in a_category['value_saver_arguments']:
                 click.echo("    {arg}".format(arg=an_arg))
             click.echo()
+
+
+@cli.command('filter', short_help="apply filter for loadleveler")
+@click.option('-f', '--filter', 'filter_name', help="filter name")
+@click.option('-d', '--detail', is_flag=True, default=False, help="show detail information")
+@click.option('--config-file', help="config file path")
+def apply_filter(filter_name, detail, config_file):
+
+    """
+    show category list defined in config file.
+    """
+    config = get_config(config_file)
+
+    params = ''
+    sort_keys = None
+
+    query_model = get_llq_detail_query_response(config, params)
+
+    from loadleveler_client.plugins.filters import long_time_operation_job_filter, nwp_pd_long_time_upload_job_filter
+
+    filter_module_list = [
+        long_time_operation_job_filter,
+        nwp_pd_long_time_upload_job_filter
+    ]
+
+    def apply_filters(job_items):
+        results = []
+        for a_filter_module in filter_module_list:
+            a_filter_object = a_filter_module.create_filter()
+            cur_filter_name = a_filter_object['name']
+            a_filter = a_filter_object['filter']
+            target_job_items = a_filter.filter(job_items)
+            results.append({
+                'name': cur_filter_name,
+                'target_job_items': target_job_items
+            })
+        return results
+
+    filter_results = apply_filters(query_model['items'])
+
+    for a_filter_result in filter_results:
+        click.echo('{filter_name}:'.format(filter_name=click.style(a_filter_result['name'], bold=True)))
+
+        max_class_length = 0
+        max_owner_length = 0
+        for an_item in a_filter_result['target_job_items']:
+            job_class = get_property_data(an_item, "llq.class")
+            if len(job_class) > max_class_length:
+                max_class_length = len(job_class)
+            job_owner = get_property_data(an_item, "llq.owner")
+            if len(job_owner) > max_owner_length:
+                max_owner_length = len(job_owner)
+
+        items = a_filter_result['target_job_items']
+        sort_query_response_items(items, sort_keys)
+
+        for an_item in items:
+            job_id = get_property_data(an_item, "llq.id")
+            job_class = get_property_data(an_item, "llq.class")
+            job_owner = get_property_data(an_item, "llq.owner")
+            job_script = get_property_data(an_item, "llq.job_script")
+            job_status = get_property_data(an_item, "llq.status")
+            job_queue_data = get_property_data(an_item, "llq.queue_date")
+            click.echo("{job_id} {job_status} {job_class} {job_owner} {job_queue_data} {job_script}".format(
+                job_id=click.style(job_id, bold=True),
+                job_class=click.style(("{job_class: <" + str(max_class_length) + "}").format(job_class=job_class),
+                                      fg='blue'),
+                job_owner=click.style(("{job_owner: <" + str(max_owner_length) + "}").format(job_owner=job_owner),
+                                      fg='cyan'),
+                job_queue_data=click.style(job_queue_data.strftime("%m/%d %H:%M"), fg='blue'),
+                job_script=job_script,
+                job_status=click.style("{job_status: <2}".format(job_status=job_status), fg='yellow'),
+            ))
+        click.echo()
 
 
 if __name__ == "__main__":
