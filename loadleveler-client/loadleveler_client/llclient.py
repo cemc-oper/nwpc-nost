@@ -173,7 +173,8 @@ def cli():
 @click.option('-c', '--class-list', multiple=True, help="class list")
 @click.option('-s', '--sort-keys', help="sort keys, split by :, such as status:query_date")
 @click.option('-p', '--params', default="", help="llq params")
-def query(config_file, user_list, class_list, sort_keys, params):
+@click.option('-j', '--job-script-pattern', help="job script pattern")
+def query(config_file, user_list, class_list, sort_keys, params, job_script_pattern):
     """
     Query jobs in LoadLeveler and show in a simple format.
     """
@@ -201,6 +202,13 @@ def query(config_file, user_list, class_list, sort_keys, params):
             max_owner_length = len(job_owner)
 
     items = model_dict['items']
+
+    if job_script_pattern:
+        from loadleveler_client.plugins.filters import job_script_filter
+        a_filter_object = job_script_filter.create_filter(job_script_pattern)
+        a_filter = a_filter_object['filter']
+        items = a_filter.filter(items)
+
     sort_query_response_items(items, sort_keys)
 
     for an_item in items:
@@ -474,7 +482,7 @@ def show_category(detail, config_file):
 def apply_filter(filter_name, detail, config_file):
 
     """
-    show category list defined in config file.
+    apply filter for loadleveler.
     """
     config = get_config(config_file)
 
