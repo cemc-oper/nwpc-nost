@@ -3,30 +3,12 @@ from nwpc_hpc_model.loadleveler.filter_condition import \
     PropertyFilterCondition, \
     get_property_data
 from nwpc_hpc_model.loadleveler.filter import Filter
-
-
-def create_value_in_checker(expect_value):
-    def value_checker(value):
-        if expect_value in value:
-            return True
-        else:
-            return False
-    return value_checker
+from nwpc_hpc_model.loadleveler.filter_condition import create_greater_value_checker, create_value_in_checker
 
 
 filter_info = {
     'name': 'job_script_filter'
 }
-
-
-def create_greater_value_checker(expect_value):
-    def value_checker(value):
-        if value > expect_value:
-            return True
-        else:
-            return False
-
-    return value_checker
 
 
 def create_filter(pattern):
