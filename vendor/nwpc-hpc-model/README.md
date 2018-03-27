@@ -1,16 +1,21 @@
 # nwpc-hpc-model
 
-A collection of models for HPC used in NWPC. Including model for:
+[![Build Status](https://travis-ci.org/perillaroc/nwpc-hpc-model.svg?branch=master)](https://travis-ci.org/perillaroc/nwpc-hpc-model)
+[![codecov](https://codecov.io/gh/perillaroc/nwpc-hpc-model/branch/master/graph/badge.svg)](https://codecov.io/gh/perillaroc/nwpc-hpc-model)
 
-* LoadLeveler's job query
+A collection of models for HPC used in NWPC. Including models for:
+
+* LoadLeveler's `llq -l` query
+* Slurm's `sinfo` query
 
 ## Installation
 
-Download source code from Github releases. Run `python setup.py install` to install.
+Download source code from Github releases or get the latest code from Github repo. 
+Run `python setup.py install` to install.
 
-## Example
+## Getting start
 
-The following example use nwpc-hpc-model to extract job id and job owner from a llq -l query.
+The following example uses `nwpc-hpc-model` to extract job id and job owner from a `llq -l` query.
  
 A config json file is used to create query categories.
 
@@ -38,7 +43,7 @@ A config json file is used to create query categories.
 
 ```
 
-First create some `QueryCategory` according to the config json file.
+First create `QueryCategoryList` according to the config json file.
 
 ```python
 from nwpc_hpc_model.loadleveler import QueryCategoryList, \
@@ -77,9 +82,9 @@ output_lines = output_string.split("\n")
 Build `QueryModel` from `QueryCategoryList`
 
 ```python
-from nwpc_hpc_model.loadleveler import QueryModel
+from nwpc_hpc_model.loadleveler import LoadLevelerQueryModel
 
-model = QueryModel.build_from_category_list(output_lines, category_list)
+model = LoadLevelerQueryModel.build_from_category_list(output_lines, category_list)
 ```
 
 `model` contains data of all categories in the config file.
@@ -90,6 +95,6 @@ Use `pytest` to run all tests.
 
 ## License
 
-Copyright &copy; 2016-2017, Perilla Roc.
+Copyright &copy; 2016-2018, Perilla Roc.
 
 `nwpc-hpc-model` is licensed under [The MIT License](https://opensource.org/licenses/MIT).
