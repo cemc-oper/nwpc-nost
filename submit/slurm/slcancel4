@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Cancel ecflow job which is running in Slurm.
+#
+# Usage:
+# 	slcancel4 %ECF_RID% %ECF_NAME% %ECF_HOST% %ECF_PORT%
+#
+# Version:
+# 	v1.0 2018.03.30
+
+usage() {
+  echo "Cancel ecflow job which is running in Slurm."
+  echo "Usage: slcancel4 %ECF_RID% %ECF_NAME% %ECF_HOST% %ECF_PORT%"
+}
+
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
+}
+
+if [[ $# -ne 4 ]]
+then
+  err "error params"
+  usage
+  exit 1
+fi
+
+set -u
+set -ex
+
+ecf_rid=
+task_name=
+ecf_host=
+ecf_port=
+
+ecf_rid=$1
+task_name=$2
+ecf_host=$3
+ecf_port=$4
+
+scancel ${ecf_rid}
+
+ecflow_client --host=${ecf_host} --port=${ecf_port} --force=aborted ${task_name}
