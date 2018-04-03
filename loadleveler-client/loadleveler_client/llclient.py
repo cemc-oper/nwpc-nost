@@ -4,13 +4,12 @@ import subprocess
 import yaml
 import click
 
-from nwpc_hpc_model.loadleveler import QueryCategory, QueryCategoryList, QueryModel
-from nwpc_hpc_model.loadleveler import record_parser
-from nwpc_hpc_model.loadleveler import value_saver
-from nwpc_hpc_model.loadleveler.filter_condition import get_property_data
+from nwpc_hpc_model.workload.loadleveler import \
+    QueryCategory, QueryCategoryList, QueryModel, record_parse, value_saver
+from nwpc_hpc_model.workload.query_item import get_property_data
 
 
-config_file_name = "llclient.config.yaml"
+config_file_name = "llclient.config.yml"
 default_config_file_path = os.path.join(os.path.dirname(__file__), "conf", config_file_name)
 
 
