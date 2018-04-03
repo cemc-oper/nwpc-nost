@@ -1,5 +1,5 @@
 import datetime
-from nwpc_hpc_model.loadleveler.filter_condition import \
+from nwpc_hpc_model.workload.filter_condition import \
     FilterCondition, \
     get_property_data, \
     PropertyFilterCondition, \
@@ -9,7 +9,7 @@ from nwpc_hpc_model.loadleveler.filter_condition import \
     create_in_value_checker, \
     create_value_in_checker
 
-from nwpc_hpc_model.loadleveler import QueryItem, QueryProperty
+from nwpc_hpc_model.workload import QueryItem, QueryProperty
 
 
 def create_job_item_dict(
@@ -130,30 +130,6 @@ def create_job_item(
     job_item.props.append(query_property)
 
     return job_item
-
-
-def test_get_property_data():
-    job_item = create_job_item_dict(
-        job_id="id",
-        owner="nwp_xp",
-        job_class="serial",
-        queue_date=datetime.datetime.now(),
-        priority=50,
-        job_script="/cma/g3/test.ksh"
-    )
-
-    assert get_property_data(job_item, "llq.job_script") == "/cma/g3/test.ksh"
-
-    job_item = create_job_item(
-        job_id="id",
-        owner="nwp_xp",
-        job_class="serial",
-        queue_date=datetime.datetime.now(),
-        priority=50,
-        job_script="/cma/g3/test.ksh"
-    )
-
-    assert get_property_data(job_item, "llq.job_script") == "/cma/g3/test.ksh"
 
 
 def test_condition():
