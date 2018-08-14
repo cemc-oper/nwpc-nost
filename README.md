@@ -31,11 +31,19 @@ A CLI client for LoadLeveler in NWPC.
 
 Please refer to README.md in each component's directory for detailed introductions.
 
+### Slurm Client
+
+A CLI client for Slurm in NWPC.
+
+### NWPC Data Client
+
+A CLI command to find data in NWPC's HPC.
+
 License
 -------
 
-Copyright &copy; 2016-2017, Perilla Roc.
+Copyright &copy; 2016-2018, Perilla Roc.
 
-nwpc-operation-system-tool is licensed under [GPL-3.0](#).
+`nwpc-operation-system-tool` is licensed under [GPL-3.0](#).
 
 [GPL-3.0]: http://www.gnu.org/licenses/gpl-3.0.en.html
