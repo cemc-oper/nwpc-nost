@@ -4,13 +4,14 @@ from pathlib import Path
 
 
 @click.command()
-@click.argument('topic', default=None)
+@click.argument('topic', default=None, required=False)
 def cli(topic):
     """
     A command line tool for NWPC Cheat Sheet.
     """
     if topic is None:
         click.echo(click.get_current_context().get_help())
+        click.get_current_context().exit()
 
     sheets_dir = Path(Path(__file__).parent, './sheets')
 
