@@ -1,5 +1,7 @@
-nwpc-operation-system-tool
+nwpc-nost
 =====
+
+`nwpc-operation-system-tool`
 
 NWPC operation system tool suite, including such components:
 
@@ -44,6 +46,6 @@ License
 
 Copyright &copy; 2016-2018, Perilla Roc.
 
-`nwpc-operation-system-tool` is licensed under [GPL-3.0](#).
+`nwpc-nost` is licensed under [GPL-3.0](#).
 
 [GPL-3.0]: http://www.gnu.org/licenses/gpl-3.0.en.html
