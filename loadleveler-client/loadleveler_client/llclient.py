@@ -4,8 +4,10 @@ import subprocess
 import yaml
 import click
 
-from nwpc_hpc_model.workload.loadleveler import \
-    QueryCategory, QueryCategoryList, QueryModel, record_parse, value_saver
+from nwpc_hpc_model.workload.loadleveler import (
+    QueryCategory, QueryCategoryList, LoadLevelerQueryModel,
+    record_parser, value_saver
+)
 from nwpc_hpc_model.workload.query_item import get_property_data
 
 
@@ -23,7 +25,7 @@ def get_config(config_file_path):
     if not config_file_path:
         config_file_path = default_config_file_path
     with open(config_file_path, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     return config
 
 
@@ -56,19 +58,15 @@ def build_category_list(category_list_config):
 def get_sort_data(job_item, property_id):
     data = get_property_data(job_item, property_id)
     if property_id == 'llq.status':
+        status_map = {
+            'R': 0,
+            'C': 10,
+            'I': 100,
+            'RP': 200,
+            'H': 300,
+        }
         status = data
-        if status == 'R':
-            return 0
-        elif status == 'C':
-            return 10
-        elif status == 'I':
-            return 100
-        elif status == 'RP':
-            return 200
-        elif status == 'H':
-            return 300
-        else:
-            return 500
+        return status_map.get(status, 500)
     else:
         return data
 
@@ -127,7 +125,7 @@ def get_llq_detail_query_model(config, params=""):
     output_lines = run_llq_detail_command(params=params).split("\n")
     category_list = build_category_list(config['category_list'])
 
-    model = QueryModel.build_from_category_list(output_lines, category_list)
+    model = LoadLevelerQueryModel.build_from_category_list(output_lines, category_list)
     return model
 
 

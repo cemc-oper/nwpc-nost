@@ -1,10 +1,10 @@
 # coding=utf-8
 from nwpc_hpc_model.workload.query_item import get_property_data
 from nwpc_hpc_model.workload.loadleveler.filter import Filter
-from nwpc_hpc_model.workload.loadleveler.filter_condition import \
-    create_greater_value_checker, create_value_in_checker \
+from nwpc_hpc_model.workload.loadleveler.filter_condition import (
+    create_greater_value_checker, create_value_in_checker,
     PropertyFilterCondition
-
+)
 
 filter_info = {
     'name': 'job_script_filter'

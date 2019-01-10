@@ -331,7 +331,7 @@ def grid(log_file_path, begin_date, end_date, begin_time, end_time, x_type, y_ty
                     grid_result[x_value][y_value] = 0
                 grid_result[x_value][y_value] += 1
 
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         result = {
             'app': 'llsubmit4_error_analyzer',
             'type': 'grid',
