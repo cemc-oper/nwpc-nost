@@ -1,15 +1,17 @@
-nwpc-nost
-=====
+# nwpc-nost
 
-`nwpc-operation-system-tool`
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/707d50ccf05b4648af89622487a69f25)](https://www.codacy.com/app/perillaroc/nwpc-nost?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=perillaroc/nwpc-nost&amp;utm_campaign=Badge_Grade)
+
+> nwpc-operation-system-tool
 
 NWPC operation system tool suite, including such components:
 
 * A job submission script using in SMS.
 * CLI commands used to manipulate SMS client and SMS server.
 
-Introduction
-----
+## Introduction
+
+Please refer to `README.md` in each component's directory for detailed introductions.
 
 ### Slurm Client :sunny:
 
@@ -18,8 +20,6 @@ A CLI client for Slurm in NWPC.
 ### LoadLeveler Client :sunny:
 
 A CLI client for LoadLeveler in NWPC.
-
-Please refer to `README.md` in each component's directory for detailed introductions.
 
 ### NWPC Data Client :sunny:
 
@@ -41,10 +41,9 @@ A script to analyze the error log of SMS job submissions which are failed.
 
 CLI commands to manipulate sms client and sms server.
 
-License
--------
+## License
 
-Copyright &copy; 2016-2018, Perilla Roc.
+Copyright &copy; 2016-2019, Perilla Roc.
 
 `nwpc-nost` is licensed under [GPL-3.0](#).
 
