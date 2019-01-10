@@ -10,7 +10,7 @@ with codecs.open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='loadleveler-client',
 
-    version='0.1.0',
+    version='1.0.0',
 
     description='Loadleveler Client',
     long_description=long_description,
@@ -24,8 +24,9 @@ setup(
     license='GPL-3.0',
 
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
+        'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'
@@ -42,7 +43,8 @@ setup(
 
     install_requires=[
         'pyyaml',
-        'click'
+        'click',
+        'nwpc-hpc-model'
     ],
 
     entry_points={

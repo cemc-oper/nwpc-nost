@@ -1,12 +1,13 @@
 # coding=utf-8
 import datetime
-from nwpc_hpc_model.workload.loadleveler.filter_condition import \
-    PropertyFilterCondition, \
-    create_less_value_checker, \
-    create_in_value_checker, \
-    create_equal_value_checker, \
+from nwpc_hpc_model.workload.filter_condition import (
+    PropertyFilterCondition,
+    create_less_value_checker,
+    create_in_value_checker,
+    create_equal_value_checker,
     get_property_data
-from nwpc_hpc_model.workload.loadleveler.filter import Filter
+)
+from nwpc_hpc_model.workload.filter import Filter
 
 
 filter_info = {

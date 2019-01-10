@@ -477,7 +477,6 @@ def show_category(detail, config_file):
 @click.option('-d', '--detail', is_flag=True, default=False, help="show detail information")
 @click.option('--config-file', help="config file path")
 def apply_filter(filter_name, detail, config_file):
-
     """
     apply filter for loadleveler.
     """
