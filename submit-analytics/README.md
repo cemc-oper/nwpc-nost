@@ -104,14 +104,14 @@ Summarize data by two dimensions.
 
 ### X-axis
 
-* hour
-* week
+-   hour
+-   week
 
 ### Y-axis
 
-* week
-* system
-* date
+-   week
+-   system
+-   date
 
 ### Example
 
@@ -177,7 +177,6 @@ Get summary information for a log.
     }
 }
 ```
-
 
 ## Installation
 

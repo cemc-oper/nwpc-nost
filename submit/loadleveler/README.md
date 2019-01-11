@@ -24,15 +24,15 @@ export PATH=$HOME/bin:$PATH
 
 请检查 sms 服务器的名称 `nameofsms`。默认名称与用户名有关，见下表：
 
-用户名 | SMS 服务器名 |
------------- | ------------- |
-nwp | nwpc_op |
-nwp_qu | nwpc_qu |
-nwp_sp | nwpc_nwp_sp |
-nwp_ex | nwpc_ex |
-nwp_xp | nwpc_xp | |
-nwpc_pd | nwpc_pd |
-其它用户 | nwpc_$USER |
+| 用户名     | SMS 服务器名    |
+| ------- | ----------- |
+| nwp     | nwpc_op     |
+| nwp_qu  | nwpc_qu     |
+| nwp_sp  | nwpc_nwp_sp |
+| nwp_ex  | nwpc_ex     |
+| nwp_xp  | nwpc_xp     |
+| nwpc_pd | nwpc_pd     |
+| 其它用户    | nwpc\_$USER |
 
 如果 sms 服务器名称不符合默认设置，请修改源码，设置 nameofsms 值。
 
@@ -46,9 +46,9 @@ llsubmit2 %SMSJOB% %SMSNAME% [%SMSJOBOUT%]
 
 各参数均为SMS变量，含义如下：
 
-  * `SMSJOB`：任务脚本路径
-  * `SMSNAME`：SMS中节点的路径
-  * `SMSJOBOUT`：重定向标准输出的文件，默认将 SMSJOB 的 `*.job[0-9]` 替换为 `*.[0-9]`
+-   `SMSJOB`：任务脚本路径
+-   `SMSNAME`：SMS中节点的路径
+-   `SMSJOBOUT`：重定向标准输出的文件，默认将 SMSJOB 的 `*.job[0-9]` 替换为 `*.[0-9]`
 
 使用示例
 
@@ -66,10 +66,10 @@ llsubmit4 %SMSJOB% %SMSNAME% %SMSTRIES% %SMSTRYNO%
 
 各参数均为SMS变量，含义如下：
 
-  * `SMSJOB`：任务脚本路径
-  * `SMSNAME`：SMS中节点的路径
-  * `SMSTRIES`：自动重复提交的次数
-  * `SMSTRYNO`：当前提交次数
+-   `SMSJOB`：任务脚本路径
+-   `SMSNAME`：SMS中节点的路径
+-   `SMSTRIES`：自动重复提交的次数
+-   `SMSTRYNO`：当前提交次数
 
 使用示例
 
@@ -100,9 +100,9 @@ llsubmit4 /cma/g1/nwp/SMSOUT/gmf_gsi_v1r5/T639/00/prods/micaps_base/base_156.job
 
 llsubmit4 提供下列日志：
 
-  * 提交日志：llsubmit4.submit.log
-  * 错误日志：llsubmit4.error.log
-  * 调试日志：llsubmit4.submit.log
+-   提交日志：llsubmit4.submit.log
+-   错误日志：llsubmit4.error.log
+-   调试日志：llsubmit4.submit.log
 
 默认放在 `$WORKDIR/sublog`
 
@@ -117,4 +117,5 @@ llsubmit4 提供下列日志：
 在开发过程中受到多位同事的指导，感谢他们提供的诸多建议。
 
 [ecflow]: https://software.ecmwf.int/wiki/display/ECFLOW/Home
-[LoadLeveler]: http://www.ibm.com/systems/power/software/loadleveler/
+
+[loadleveler]: http://www.ibm.com/systems/power/software/loadleveler/
