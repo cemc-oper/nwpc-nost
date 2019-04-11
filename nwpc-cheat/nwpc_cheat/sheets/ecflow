@@ -1,5 +1,0 @@
-# start ecflow server
-/g1/u/nwp/bin/start_ecflow.sh
-
-# stop ecflow server
-/g1/u/nwp/bin/stop_ecflow.sh
