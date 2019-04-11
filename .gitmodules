@@ -1,0 +1,12 @@
+[submodule "loadleveler-client"]
+	path = loadleveler-client
+	url = https://github.com/nwpc-oper/loadleveler-client.git
+[submodule "nwpc-cheat"]
+	path = nwpc-cheat
+	url = https://github.com/nwpc-oper/nwpc-cheat.git
+[submodule "nwpc-data-client"]
+	path = nwpc-data-client
+	url = https://github.com/nwpc-oper/nwpc-data-client.git
+[submodule "slurm-client"]
+	path = slurm-client
+	url = https://github.com/nwpc-oper/slurm-client.git
